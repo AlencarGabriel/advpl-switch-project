@@ -11,16 +11,47 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "*"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "extension.switchProject",
+                "title": "Trocar Projeto"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Titulo",
+            "properties": {
+                "advpl.projectActive": {
+                    "type": "string",
+                    "default": "Selecione o Projeto",
+                    "description": "Projeto padrão do Workspace"
+                },
+                "advpl.foldersProject": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Pastas do projeto",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "path": {
+                                "type": "string",
+                                "default": null,
+                                "description": "Caminho da pasta do projeto"
+                            },
+                            "name": {
+                                "type": "string",
+                                "default": null,
+                                "description": "Alias para o projeto"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
