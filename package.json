@@ -11,13 +11,14 @@
         "Other"
     ],
     "activationEvents": [
-        "*"
+        "onLanguage:advpl",
+        "onCommand:switch.switchProject"
     ],
-    "main": "./out/extension",
+    "main": "./out/switch",
     "contributes": {
         "commands": [
             {
-                "command": "extension.switchProject",
+                "command": "switch.switchProject",
                 "title": "Trocar Projeto"
             }
         ],
