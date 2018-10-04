@@ -2,7 +2,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { window, StatusBarAlignment, StatusBarItem } from 'vscode';
+import { window, StatusBarAlignment, StatusBarItem, Uri } from 'vscode';
+import { List } from './List';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -67,26 +68,41 @@ function showFolders(status: StatusBarItem) {
     //     }
     // ];
 
-    let folders = vscode.workspace.getConfiguration("advpl").get<Array<Folders>>("foldersProject");
-    let patches: Array<string> = [];
-    vscode.workspace.workspaceFolders
+    let folders = vscode.workspace.getConfiguration("advpl").get<Array<Folder>>("foldersProject");
+    let patches: Array<List> = [];
 
     if (folders) {
         for (let i = 0; i < folders.length; i++) {
-            patches.push(folders[i].name);
+            patches.push(
+                new List(folders[i].name, "", folders[i].path)
+            );
         }
     }
 
     window.showQuickPick(patches).then((a => {
-        if (a) {
-            status.text = a.toString();
-            let updObj = vscode.workspace.getConfiguration("advpl");
-            updObj.update("projectActive", a.toString());
-            let pastas = vscode.workspace.getConfiguration("folders");
-            pastas.update("folders", folders, false);
-        }
-    }));
+        let _uri: Uri;
 
+        if (a) {
+            status.text = a.label;
+            let updObj = vscode.workspace.getConfiguration("advpl");
+            updObj.update("projectActive", a.label);
+
+            _uri = vscode.Uri.parse("file:" + a.value);
+            // _uri.with()
+
+            if (vscode.workspace.updateWorkspaceFolders(0, 0, {
+                uri: _uri, name: a.label
+            })) {
+                window.showInformationMessage("Projeto trocado para: " + a.label);
+            }
+        }
+
+        if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 1) {
+            vscode.workspace.updateWorkspaceFolders(1, vscode.workspace.workspaceFolders.length-1);
+        }
+
+    }));
+    // { scheme: "file", authority: "", path: "/./Branches\ProtheusClean\src", query: "", fragment: "", … }
 }
 
 export async function showWorkspaceFolderPick(): Promise<vscode.WorkspaceFolder | undefined> {
