@@ -1,6 +1,6 @@
 import { window, StatusBarItem, StatusBarAlignment } from 'vscode';
 
-export class Environment {
+export class StatusProject {
     private _statusBarItem : StatusBarItem;
     private _selectedProject: string = "Selecionar Projeto";
 
@@ -10,7 +10,11 @@ export class Environment {
         this._statusBarItem.text = this._selectedProject;
     }
 
-    public Update(selectedProject: string) {
+    public update(selectedProject?: string) {
+        if (selectedProject) {
+            this._selectedProject = selectedProject;
+        }
+
         this._statusBarItem.text = "$(squirrel) " + this._selectedProject;
         this._statusBarItem.show();
     }

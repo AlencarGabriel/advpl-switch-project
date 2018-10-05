@@ -14,12 +14,16 @@
         "onLanguage:advpl",
         "onCommand:switch.switchProject"
     ],
-    "main": "./out/switch",
+    "main": "./out/extension",
     "contributes": {
         "commands": [
             {
                 "command": "switch.switchProject",
                 "title": "Trocar Projeto"
+            },
+            {
+                "command": "switch.removeLastWorkspace",
+                "title": "Remover últimos projetos"
             }
         ],
         "configuration": {
