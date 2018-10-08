@@ -1,22 +1,26 @@
-# advpl-switch-project README
+# Troca de projeto ADvPL
 
-This is the README for your extension "advpl-switch-project". After writing up a brief description, we recommend including the following sections.
+Esta é a extensão que vai facilitar seus Debugs de projetos ADvPL, estou muito feliz pelo seu Download e espero que goste.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Esta extensão possui as seguintes funcionalidades implementadas:
 
-For example if there is an image subfolder under your extension project workspace:
+* Trocar projeto ativo no Workspace
+* Remover últimos projetos
 
-\!\[feature X\]\(images/feature-x.png\)
+Próximas implementações:
+* Finalização do desenvolvimento da extensão.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Requisitos para utilização
 
-## Requirements
+Esta extensão depende da [advpl-vscode](https://marketplace.visualstudio.com/items?itemName=KillerAll.advpl-vscode) desenvolvida por [Rodrigo Antonio Godinho da Silva](https://github.com/killerall).
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Issues
 
-## Extension Settings
+Caso encontre algum problema, ou tenha alguma dúvida ou sugestão de melhoria, fique a vontade para abrir uma Issue ou enviar um Pull Request.
+
+<!-- ## Extension Settings
 
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
@@ -29,26 +33,10 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Calling out known issues can help limit users opening duplicate issues against your extension. -->
 
 -----------------------------------------------------------------------------------------------------------
-
+<!--
 ## Working with Markdown
 
 **Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
@@ -60,6 +48,6 @@ Added features X, Y, and Z.
 ### For more information
 
 * [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/) -->
 
-**Enjoy!**
+**Aproveite, me ajudou e com certeza irá te ajudar tambem!** :heart:
