@@ -13,23 +13,21 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(removeLastWorkspace());
     context.subscriptions.push(switchProject());
-
-    // vscode.commands.executeCommand('switch.removeLastWorkspace').then((e => {
-    //     // context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => e.affectsConfiguration(trocaManual()));
-    // }));
 }
 
 function switchProject() {
     let disposable = vscode.commands.registerCommand('switch.switchProject', () => {
 
-        window.showQuickPick(getPatches()).then((a => {
-            if (a) {
-                let _uri = vscode.Uri.parse("file:" + a.value);
-                changeProject(_uri, a.label);
-            } else {
-                window.showErrorMessage("Erro ao alterar o projeto.");
-            }
-        }));
+        if (checkWorkspaceFolders()) {
+            window.showQuickPick(getPatches()).then((a => {
+                if (a) {
+                    let _uri = vscode.Uri.parse("file:" + a.value);
+                    changeProject(_uri, a.label);
+                } else {
+                    window.showErrorMessage("Erro ao alterar o projeto.");
+                }
+            }));
+        }
 
     });
     return disposable;
@@ -56,46 +54,6 @@ function removeLastWorkspace() {
 export function deactivate() {
 }
 
-// function showFolders() {
-
-//     window.showQuickPick(patches).then((a => {
-//         let _uri: Uri;
-
-//         if (a) {
-//             if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 1) {
-//                 for (let i = 1; i < vscode.workspace.workspaceFolders.length; i++) {
-//                     const element = vscode.workspace.workspaceFolders[i];
-//                     removeWorkspace(element.uri);
-//                 }
-//             }
-
-//             vscode.workspace.saveAll().then((b => {
-
-//                 _uri = vscode.Uri.parse("file:" + a.value);
-
-//                 if (openWorkspace(_uri, a.label)) {
-//                     window.showInformationMessage("Projeto trocado para: " + a.label);
-//                 }
-
-//                 //     if (vscode.workspace.updateWorkspaceFolders(0, null, { uri: _uri, name: a.label })) {
-//                 //         vscode.workspace.saveAll().then((c => {
-//                 //             if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 1) {
-//                 //                 vscode.workspace.updateWorkspaceFolders(1, vscode.workspace.workspaceFolders.length - 1);
-//                 //             }
-//                 //         })).then((d => {
-//                 //             vscode.workspace.saveAll().then((e => {
-//                 //                 let updObj = vscode.workspace.getConfiguration("advpl");
-//                 //                 updObj.update("projectActive", a.label);
-//                 //                 status.update(a.label);
-//                 //                 window.showInformationMessage("Projeto trocado para: " + a.label);
-//                 //             }));
-//                 //         }));
-//                 //     }
-//             }));
-//         }
-//     }));
-// }
-
 export function openWorkspace(uri: vscode.Uri, name: string) {
     return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
 }
@@ -107,13 +65,6 @@ export function addWorkspace(uri: vscode.Uri, name: string) {
 export function removeWorkspace(uri: vscode.Uri) {
     const { getWorkspaceFolder } = vscode.workspace;
     const workspaceFolder = getWorkspaceFolder(uri);
-    // const index = workspaceFolders.findIndex(wf => {
-    //   const wfUri = wf.uri;
-
-    //   return (
-    //     wfUri.scheme === uri.scheme && wfUri.authority === uri.authority && wfUri.path === uri.path
-    //   );
-    // });
 
     if (!workspaceFolder) {
         return;
@@ -158,6 +109,7 @@ export function trocaManual() {
         changeProject(_uri, projectActive);
     }
 }
+
 export function getPathByLabel(label: string) {
     let patches = getPatches();
 
@@ -166,4 +118,24 @@ export function getPathByLabel(label: string) {
     // }
 
     // return undefined;
+}
+
+export function checkWorkspaceFolders() {
+    let actions: string[] = ["Executar"];
+
+    if (vscode.workspace.workspaceFolders) {
+        if (vscode.workspace.workspaceFolders.length > 1) {
+            window.showInformationMessage("Necessário rodar o comando: 'Remover últimos projetos' para limpar as outras pastas abertas no workspace.", ...actions).then((e => {
+                if (e === "Executar") {
+                    vscode.commands.executeCommand("switch.removeLastWorkspace").then(() => {
+                        window.showInformationMessage("Comando executado.");
+                    });
+                }
+            }));
+
+            return false;
+        }
+    }
+
+    return true;
 }
