@@ -8,14 +8,40 @@ import { StatusProject } from './StatusProject';
 let status: StatusProject;
 
 export function activate(context: vscode.ExtensionContext) {
+    let advplVsCode = vscode.extensions.getExtension("KillerAll.advpl-vscode");
+
+    // Verifica antes de tudo se a extensão KillerAll.advpl-vscode está instalada.
+    if (advplVsCode) {
+        // if (!advplVsCode.isActive) {
+        //     window.showWarningMessage("A extensão KillerAll.advpl-vscode está desativada, ative-a antes de usar esta.", ...["Ativar"]).then((e => {
+        //         if (e === "Ativar") {
+        //             // vscode.commands.executeCommand("workbench.extensions.action.showDisabledExtensions");
+        //             if  (advplVsCode){
+        //                 advplVsCode.activate();
+        //             }
+        //         }
+        //     }));
+        // }else{
+        Initialize(context);
+        // }
+    } else {
+        window.showWarningMessage("A extensão KillerAll.advpl-vscode não está instalada, instale-a antes de usar esta.", ...["Instalar"]).then((e => {
+            if (e === "Instalar") {
+                vscode.commands.executeCommand("workbench.extensions.action.installExtensions");
+            }
+        }));
+    }
+}
+
+export function Initialize(context: vscode.ExtensionContext) {
     status = new StatusProject();
     status.update(vscode.workspace.getConfiguration("advpl").get("projectActive"));
 
-    context.subscriptions.push(removeLastWorkspace());
-    context.subscriptions.push(switchProject());
+    context.subscriptions.push(addRemoveLastWorkspace());
+    context.subscriptions.push(addSwitchProject());
 }
 
-function switchProject() {
+function addSwitchProject() {
     let disposable = vscode.commands.registerCommand('switch.switchProject', () => {
 
         if (checkWorkspaceFolders()) {
@@ -33,7 +59,7 @@ function switchProject() {
     return disposable;
 }
 
-function removeLastWorkspace() {
+function addRemoveLastWorkspace() {
     let disposable = vscode.commands.registerCommand('switch.removeLastWorkspace', () => {
 
         if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 1) {
@@ -55,7 +81,11 @@ export function deactivate() {
 }
 
 export function openWorkspace(uri: vscode.Uri, name: string) {
-    return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
+    if (vscode.workspace.workspaceFolders) {
+        return vscode.workspace.updateWorkspaceFolders(0, 0, { uri, name });
+    } else {
+        return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
+    }
 }
 
 export function addWorkspace(uri: vscode.Uri, name: string) {
@@ -78,11 +108,25 @@ export function getPatches() {
     let folders = vscode.workspace.getConfiguration("advpl").get<Array<Folder>>("foldersProject");
 
     if (folders) {
+        if (folders.length === 0) {
+            window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                if (e === "Configurações") {
+                    vscode.commands.executeCommand("workbench.action.openSettings");
+                }
+            });
+        }
+
         for (let i = 0; i < folders.length; i++) {
             patches.push(
                 new List(folders[i].name, "", folders[i].path)
             );
         }
+    } else {
+        window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+            if (e === "Configurações") {
+                vscode.commands.executeCommand("workbench.action.openSettings");
+            }
+        });
     }
 
     return patches;
@@ -91,12 +135,23 @@ export function getPatches() {
 export function changeProject(uri: vscode.Uri, label: string) {
     if (openWorkspace(uri, label)) {
         let updObj = vscode.workspace.getConfiguration("advpl");
-        updObj.update("projectActive", label);
-        status.update(label);
 
-        window.showInformationMessage("Projeto trocado para: " + label);
+        updObj.update("projectActive", label).then(() => {
+
+            // Atualiza a Status Bar
+            status.update(label);
+
+            // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
+            vscode.commands.executeCommand("advpl.getDebugInfos");
+
+            window.showInformationMessage("Projeto trocado para: " + label);
+        });
     } else {
-        window.showErrorMessage("Não foi possível alterar para o projeto: " + label);
+        window.showErrorMessage("Não foi possível alterar para o projeto: " + label).then(() => {
+
+            // Atualiza a janela para recarregar a extensão
+            vscode.commands.executeCommand("workbench.action.reloadWindow");
+        });
     }
 }
 

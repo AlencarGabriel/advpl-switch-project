@@ -2,7 +2,7 @@
     "name": "advpl-switch-project",
     "displayName": "ADvPL Switch Project",
     "description": "Troca de projeto ativo no Debug para um projeto ADvPL.",
-    "version": "0.0.1",
+    "version": "0.0.5",
     "publisher": "AlencarGabriel",
     "engines": {
         "vscode": "^1.27.0"
