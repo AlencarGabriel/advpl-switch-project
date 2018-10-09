@@ -4,6 +4,7 @@
     "description": "Troca de projeto ativo no Debug para um projeto ADvPL.",
     "version": "0.0.5",
     "publisher": "AlencarGabriel",
+	"icon": "images/Icon.png",
     "extensionDependencies": [
         "KillerAll.advpl-vscode"
     ],
