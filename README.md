@@ -28,14 +28,14 @@ Esta extensão depende da [advpl-vscode](https://marketplace.visualstudio.com/it
 ## Configuração
 Por padrão o VSCode adiciona no Workspace Settings as pastas do Workspace. Esta extensão manipula esta configuração conforme o projeto que está sendo usado.
 
-![Toggle](images/Configuracao.gif)
+![Configuração](images/Configuracao.gif)
 
 ## Utilização
 A extensão é ativada sempre que um projeto ADvPL é aberto, ou o comando é chamado o comando `Trocar Projeto` manualmente.
 
 > Esta extensão não reabre os arquivos que já estão abertos no editor.
 
-![Toggle](images/Utilizacao.gif)
+![Utilização](images/Utilizacao.gif)
 
 ## [Issues](https://github.com/AlencarGabriel/advpl-switch-project/issues)
 
