@@ -81,10 +81,10 @@ export function deactivate() {
 }
 
 export function openWorkspace(uri: vscode.Uri, name: string) {
-    if (vscode.workspace.workspaceFolders) {
-        return vscode.workspace.updateWorkspaceFolders(0, 0, { uri, name });
-    } else {
+    if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
         return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
+    } else {
+        return addWorkspace(uri, name);
     }
 }
 
@@ -133,25 +133,30 @@ export function getPatches() {
 }
 
 export function changeProject(uri: vscode.Uri, label: string) {
-    if (openWorkspace(uri, label)) {
-        let updObj = vscode.workspace.getConfiguration("advpl");
+    let updObj = vscode.workspace.getConfiguration("advpl");
 
-        updObj.update("projectActive", label).then(() => {
+    // Não deixa trocar para o mesmo projeto já aberto. Por algum motivo isso dá erro no VSCode quando se tenta trocar depois.
+    if (label === updObj.get<string>("projectActive")) {
+        return;
+    } else {
+        if (openWorkspace(uri, label)) {
+
+            // Atualiza a configuração setando o projeto ativo
+            updObj.update("projectActive", label);
 
             // Atualiza a Status Bar
             status.update(label);
 
-            // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
-            vscode.commands.executeCommand("advpl.getDebugInfos");
-
             window.showInformationMessage("Projeto trocado para: " + label);
-        });
-    } else {
-        window.showErrorMessage("Não foi possível alterar para o projeto: " + label).then(() => {
-
-            // Atualiza a janela para recarregar a extensão
-            vscode.commands.executeCommand("workbench.action.reloadWindow");
-        });
+            // Não é mais necessário pois ao invocar o debug do projeto, a variavel é atualizada automaticamente.
+            // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
+            // vscode.commands.executeCommand("advpl.getDebugInfos");
+        } else {
+            window.showErrorMessage("Não foi possível alterar para o projeto: " + label, ...["Reload"]).then(() => {
+                // Atualiza a janela para recarregar a extensão
+                vscode.commands.executeCommand("workbench.action.reloadWindow");
+            });
+        }
     }
 }
 
