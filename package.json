@@ -4,7 +4,16 @@
     "description": "Troca de projeto ativo no Debug para um projeto ADvPL.",
     "version": "0.0.5",
     "publisher": "AlencarGabriel",
-	"icon": "images/Icon.png",
+    "icon": "images/Icon.png",
+    "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AlencarGabriel/advpl-switch-project.git"
+    },
+    "bugs": {
+        "url": "https://github.com/AlencarGabriel/advpl-switch-project/issues",
+        "email": "alencargabriel@outlook.com.br"
+    },
     "extensionDependencies": [
         "KillerAll.advpl-vscode"
     ],
