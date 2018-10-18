@@ -18,6 +18,7 @@ Esta extensão possui as seguintes funcionalidades implementadas:
 * Remover últimos projetos
 
 Próximas implementações:
+* [Relacionar ambientes do ADvPL com o Projeto aberto](https://github.com/AlencarGabriel/advpl-switch-project/issues/8)
 * [Converter Workspace to Configuration.](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
 
