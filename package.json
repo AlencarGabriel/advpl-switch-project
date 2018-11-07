@@ -32,11 +32,19 @@
         "commands": [
             {
                 "command": "switch.switchProject",
-                "title": "Trocar Projeto"
+                "title": "Advpl - Trocar projeto ativo"
             },
             {
                 "command": "switch.removeLastWorkspace",
-                "title": "Remover últimos projetos"
+                "title": "Advpl - Remover últimos projetos"
+            },
+            {
+                "command": "switch.disableEnvironments",
+                "title": "Advpl - Desabilitar todos os Ambientes"
+            },
+            {
+                "command": "switch.enableEnvironments",
+                "title": "Advpl - Habilitar todos os Ambientes"
             }
         ],
         "configuration": {
@@ -47,6 +55,11 @@
                     "type": "string",
                     "default": "Selecione o Projeto",
                     "description": "Projeto padrão do Workspace"
+                },
+                "advpl.onlyRelatedEnvironments": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Mostrar somente os ambientes vinculados ao projeto"
                 },
                 "advpl.foldersProject": {
                     "type": "array",
@@ -64,6 +77,11 @@
                                 "type": "string",
                                 "default": null,
                                 "description": "Alias para o projeto"
+                            },
+                            "environment":{
+                                "type": "string",
+                                "default": null,
+                                "description": "Nome do ambiente da configuração advpl.environments relacionado a este projeto"
                             }
                         }
                     }
