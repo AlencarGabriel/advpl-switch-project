@@ -70,18 +70,27 @@
                         "properties": {
                             "path": {
                                 "type": "string",
-                                "default": null,
+                                "default": "",
                                 "description": "Caminho da pasta do projeto"
                             },
                             "name": {
                                 "type": "string",
-                                "default": null,
+                                "default": "",
                                 "description": "Alias para o projeto"
                             },
-                            "environment":{
-                                "type": "string",
-                                "default": null,
-                                "description": "Nome do ambiente da configuração advpl.environments relacionado a este projeto"
+                            "environments":{
+                                "type": "array",
+                                "default": [],
+                                "description": "Ambientes da configuração advpl.environments relacionados a este projeto",
+                                "items": {
+                                    "type": "string",
+                                    "examples": [
+                                        "advpl.environments[].name",
+                                        "advpl.environments[].environment"
+                                    ],
+                                    "uniqueItems": true,
+                                    "description": "Nome do ambiente da configuração advpl.environments relacionado a este projeto"
+                                }
                             }
                         }
                     }

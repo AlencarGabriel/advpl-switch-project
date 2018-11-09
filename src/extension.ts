@@ -178,18 +178,19 @@ export function changeProject(uri: vscode.Uri, label: string) {
         if (openWorkspace(uri, label)) {
 
             // Atualiza a configuração setando o projeto ativo
-            updObj.update("projectActive", label).then(() => {
-                // Atualiza a Status Bar
-                status.update(label);
+            updObj.update("projectActive", label); //.then(() => { // Usando o Promise está causando erro dentro do Then() inesplicável.
 
-                // Atualiza os ambientes que ficarão habilitados
-                disableEnvironments(label);
+            // Atualiza a Status Bar
+            status.update(label);
 
-                window.showInformationMessage("Projeto trocado para: " + label);
-                // Não é mais necessário pois ao invocar o debug do projeto, a variavel é atualizada automaticamente.
-                // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
-                // vscode.commands.executeCommand("advpl.getDebugInfos");
-            });
+            // Atualiza os ambientes que ficarão habilitados
+            disableEnvironments(label);
+
+            window.showInformationMessage("Projeto trocado para: " + label);
+            // Não é mais necessário pois ao invocar o debug do projeto, a variavel é atualizada automaticamente.
+            // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
+            // vscode.commands.executeCommand("advpl.getDebugInfos");
+            // });
 
         } else {
             window.showErrorMessage("Não foi possível alterar para o projeto: " + label, ...["Reload"]).then(() => {
@@ -271,11 +272,11 @@ function disableEnvironments(projectName: string, forceEnabled: boolean = false)
             const project = projects.find(prj => prj.name === projectName && !isNullOrEmpty(prj.name));
 
             if (project) {
-                // Guarda o ambiente que foi relacionado com o projeto
-                let environmentProject = project.environment;
+                // Guarda os ambientes que foram relacionados com o projeto
+                let environmentProjects = project.environments;
 
-                // Se foi encontrado ambientes e o projeto vinculado não está vazio, trata os ambientes do projeto
-                if (environments && !isNullOrEmpty(environmentProject)) {
+                // Se foi encontrado ambientes e os projetos vinculados não estão vazios, trata os ambientes do projeto
+                if (environments && (environmentProjects.length > 0)) {
                     environments.forEach(element => {
 
                         // Faz o tratamento para os ambientes que tem o nome definido ou não.
@@ -283,10 +284,9 @@ function disableEnvironments(projectName: string, forceEnabled: boolean = false)
                         // tslint:disable-next-line:curly
                         if (element.name) environment = element.name; else environment = element.environment;
 
-                        // Se o ambiente atual for igual ao ambiente vinculado, habilita nas configurações, se não desabilita
+                        // Se o ambiente atual for encontrado na lista de ambientes vinculados, habilita nas configurações, se não desabilita
                         // tslint:disable-next-line:curly
-                        if (environment.trim() === environmentProject.trim()) element.enable = true; else element.enable = false;
-
+                        if (environmentProjects.findIndex(env => environment.trim() === env.trim()) > -1) element.enable = true; else element.enable = false;
                     });
 
                     config.update("environments", environments);
