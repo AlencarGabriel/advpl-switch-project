@@ -1,4 +1,4 @@
-![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/AlencarGabriel.advpl-switch-project.svg)
+![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) [![Build Status](https://travis-ci.com/AlencarGabriel/advpl-switch-project.svg?branch=master)](https://travis-ci.com/AlencarGabriel/advpl-switch-project) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/AlencarGabriel.advpl-switch-project.svg)
 # Troca de projeto ADvPL
 
 Esta é a extensão que vai facilitar seus Debugs de projetos ADvPL com arquivos repetidos.
