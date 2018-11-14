@@ -2,8 +2,10 @@
 
 import * as vscode from 'vscode';
 import { window } from 'vscode';
-import { List } from './List';
-import { StatusProject } from './StatusProject';
+import { List } from './objects/List';
+import { StatusProject } from './objects/StatusProject';
+import IEnvironment from './interfaces/IEnvironment';
+import IFolder from './interfaces/IFolder';
 
 let status: StatusProject;
 
@@ -39,6 +41,8 @@ export function Initialize(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(addRemoveLastWorkspace());
     context.subscriptions.push(addSwitchProject());
+    context.subscriptions.push(addDisableEnvironments());
+    context.subscriptions.push(addEnableEnvironments());
 }
 
 function addSwitchProject() {
@@ -71,6 +75,38 @@ function addRemoveLastWorkspace() {
                 console.log("Erro ao remover os projetos.");
             }
         }
+    });
+
+    return disposable;
+}
+
+function addDisableEnvironments() {
+    let disposable = vscode.commands.registerCommand('switch.disableEnvironments', () => {
+
+        // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+        if (onlyRelatedEnvironments()) {
+            disableEnvironments("");
+            window.showInformationMessage("Todos os ambientes foram Desabilitados.");
+        } else {
+            window.showInformationMessage("Este comando só terá efeito se a configuração 'advpl.onlyRelatedEnvironments' estiver habilitada.");
+        }
+
+    });
+
+    return disposable;
+}
+
+function addEnableEnvironments() {
+    let disposable = vscode.commands.registerCommand('switch.enableEnvironments', () => {
+
+        // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+        if (onlyRelatedEnvironments()) {
+            disableEnvironments("", true);
+            window.showInformationMessage("Todos os ambientes foram Habilitados.");
+        } else {
+            window.showInformationMessage("Este comando só terá efeito se a configuração 'advpl.onlyRelatedEnvironments' estiver habilitada.");
+        }
+
     });
 
     return disposable;
@@ -142,31 +178,26 @@ export function changeProject(uri: vscode.Uri, label: string) {
         if (openWorkspace(uri, label)) {
 
             // Atualiza a configuração setando o projeto ativo
-            updObj.update("projectActive", label);
+            updObj.update("projectActive", label); //.then(() => { // Usando o Promise está causando erro dentro do Then() inesplicável.
 
             // Atualiza a Status Bar
             status.update(label);
+
+            // Atualiza os ambientes que ficarão habilitados
+            disableEnvironments(label);
 
             window.showInformationMessage("Projeto trocado para: " + label);
             // Não é mais necessário pois ao invocar o debug do projeto, a variavel é atualizada automaticamente.
             // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
             // vscode.commands.executeCommand("advpl.getDebugInfos");
+            // });
+
         } else {
             window.showErrorMessage("Não foi possível alterar para o projeto: " + label, ...["Reload"]).then(() => {
                 // Atualiza a janela para recarregar a extensão
                 vscode.commands.executeCommand("workbench.action.reloadWindow");
             });
         }
-    }
-}
-
-export function trocaManual() {
-    let projectActive = vscode.workspace.getConfiguration("advpl").get<string>('projectActive');
-
-    if (projectActive) {
-        let _uri = vscode.Uri.parse("file:" + getPathByLabel(projectActive));
-
-        changeProject(_uri, projectActive);
     }
 }
 
@@ -180,7 +211,7 @@ export function getPathByLabel(label: string) {
     // return undefined;
 }
 
-export function checkWorkspaceFolders() {
+export function checkWorkspaceFolders(): Boolean {
     let actions: string[] = ["Executar"];
 
     if (vscode.workspace.workspaceFolders) {
@@ -198,4 +229,113 @@ export function checkWorkspaceFolders() {
     }
 
     return true;
+}
+
+export function checkConfigOpened(): Boolean {
+    let files = vscode.workspace.textDocuments.filter(file => file.fileName === '\\settings\\workspace');
+    let fechou = false;
+
+    if (files && files.length > 0) {
+        window.showWarningMessage("Necessário fechar o arquivo de configurações antes de alterar o projeto", ...["Fechar Arquivo"]).then((e) => {
+            if (e === "Fechar Arquivo") {
+                files.forEach(element => {
+                    vscode.workspace.openTextDocument(element.uri).then(() => {
+                        vscode.commands.executeCommand("workbench.action.closeActiveEditor").then(() => {
+                            fechou = true;
+                        });
+                    });
+                });
+            }
+        });
+
+        return fechou;
+    } else {
+        return true;
+    }
+}
+
+function disableEnvironments(projectName: string, forceEnabled: boolean = false) {
+    // Busca as configurações
+    const config = vscode.workspace.getConfiguration("advpl");
+
+    // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+    if (onlyRelatedEnvironments()) {
+
+        // Busca os ambientes configurados
+        const environments = config.get<Array<IEnvironment>>("environments");
+
+        // Busca os projetos configurados
+        const projects = config.get<Array<IFolder>>("foldersProject");
+
+        // Busca o ambiente relacionado do projeto
+        if (projects) {
+            const project = projects.find(prj => prj.name === projectName && !isNullOrEmpty(prj.name));
+
+            if (project) {
+                // Guarda os ambientes que foram relacionados com o projeto
+                let environmentProjects = project.environments;
+
+                // Se foi encontrado ambientes e os projetos vinculados não estão vazios, trata os ambientes do projeto
+                if (environments && (environmentProjects.length > 0)) {
+                    environments.forEach(element => {
+
+                        // Faz o tratamento para os ambientes que tem o nome definido ou não.
+                        let environment: string;
+                        // tslint:disable-next-line:curly
+                        if (element.name) environment = element.name; else environment = element.environment;
+
+                        // Se o ambiente atual for encontrado na lista de ambientes vinculados, habilita nas configurações, se não desabilita
+                        // tslint:disable-next-line:curly
+                        if (environmentProjects.findIndex(env => environment.trim() === env.trim()) > -1) element.enable = true; else element.enable = false;
+                    });
+
+                    config.update("environments", environments);
+
+                }
+            } else {
+                if (environments) {
+                    environments.forEach(element => {
+
+                        if (forceEnabled) {
+                            // Habilita todos os ambientes
+                            element.enable = true;
+                        } else {
+                            // Desabilita todos os ambientes
+                            element.enable = false;
+                        }
+
+                    });
+
+                    config.update("environments", environments);
+                }
+            }
+        }
+    }
+}
+
+export function isNullOrEmpty(value: any): Boolean {
+    if (typeof value === "string") {
+        return (value === "");
+    }
+
+    // tslint:disable-next-line:triple-equals
+    if (value == null) {
+        return true;
+    }
+
+    return true;
+}
+
+export function onlyRelatedEnvironments() {
+    // Busca as configurações
+    const config = vscode.workspace.getConfiguration("advpl");
+
+    // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+    const onlyRelatedEnvironments = config.get<Boolean>("onlyRelatedEnvironments");
+
+    if (onlyRelatedEnvironments === false) {
+        return false;
+    } else {
+        return true;
+    }
 }
