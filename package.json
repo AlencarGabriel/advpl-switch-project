@@ -2,7 +2,7 @@
     "name": "advpl-switch-project",
     "displayName": "ADvPL Switch Project",
     "description": "Troca de projeto ativo no Debug para um projeto ADvPL.",
-    "version": "0.0.6",
+    "version": "0.1.3",
     "publisher": "AlencarGabriel",
     "icon": "images/Icon.png",
     "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",

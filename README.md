@@ -14,14 +14,20 @@ Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá t
 
 Esta extensão possui as seguintes funcionalidades implementadas:
 
+* [Relacionar ambientes do ADvPL com o Projeto aberto](https://github.com/AlencarGabriel/advpl-switch-project/issues/8)
 * Trocar projeto ativo no Workspace
 * Remover últimos projetos
 
 Próximas implementações:
-* [Relacionar ambientes do ADvPL com o Projeto aberto](https://github.com/AlencarGabriel/advpl-switch-project/issues/8)
+
 * [Converter Workspace to Configuration.](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
 
+## Looking For...
+* **[pt-br]** Alguem que possa me ajudar com a tradução dessa extensão para Inglês, Espanhol ou Russo. Caso tenha interesse entre em [contato comigo](mailto:alencargabriel@outlook.com.br)
+* **[en-us]** Someone who can help me with the translation of this extension to English, Spanish or Russian. If you are interested in [contact me](mailto:alencargabriel@outlook.com.br)
+* **[es es]** Alguien que pueda ayudarme con la traducción de esta extensión a Inglés, Español o Ruso. Si tiene interés entre en [contacto conmigo](mailto:alencargabriel@outlook.com.br)
+* **[ru ru]** Тот, кто может помочь мне с переводом этого расширения на английский, испанский или русский. Если вы заинтересованы в [свяжитесь со мной](mailto:alencargabriel@outlook.com.br)
 
 ## Requisitos para utilização
 
@@ -43,7 +49,7 @@ A extensão é ativada sempre que um projeto ADvPL é aberto, ou o comando é ch
 
 Caso encontre algum problema, tenha alguma dúvida ou sugestão de melhoria, fique a vontade para abrir uma Issue ou enviar um Pull Request.
 
-<!-- ## Extension Settings
+ ## Extension Settings
 
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
@@ -54,7 +60,7 @@ This extension contributes the following settings:
 * `myExtension.enable`: enable/disable this extension
 * `myExtension.thing`: set to `blah` to do something
 
-## Known Issues
+<!-- ## Known Issues
 
 Calling out known issues can help limit users opening duplicate issues against your extension. -->
 
