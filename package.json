@@ -32,11 +32,19 @@
         "commands": [
             {
                 "command": "switch.switchProject",
-                "title": "Trocar Projeto"
+                "title": "Advpl - Trocar projeto ativo"
             },
             {
                 "command": "switch.removeLastWorkspace",
-                "title": "Remover últimos projetos"
+                "title": "Advpl - Remover últimos projetos"
+            },
+            {
+                "command": "switch.disableEnvironments",
+                "title": "Advpl - Desabilitar todos os Ambientes"
+            },
+            {
+                "command": "switch.enableEnvironments",
+                "title": "Advpl - Habilitar todos os Ambientes"
             }
         ],
         "configuration": {
@@ -48,6 +56,11 @@
                     "default": "Selecione o Projeto",
                     "description": "Projeto padrão do Workspace"
                 },
+                "advpl.onlyRelatedEnvironments": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Mostrar somente os ambientes vinculados ao projeto"
+                },
                 "advpl.foldersProject": {
                     "type": "array",
                     "default": [],
@@ -57,13 +70,27 @@
                         "properties": {
                             "path": {
                                 "type": "string",
-                                "default": null,
+                                "default": "",
                                 "description": "Caminho da pasta do projeto"
                             },
                             "name": {
                                 "type": "string",
-                                "default": null,
+                                "default": "",
                                 "description": "Alias para o projeto"
+                            },
+                            "environments":{
+                                "type": "array",
+                                "default": [],
+                                "description": "Ambientes da configuração advpl.environments relacionados a este projeto",
+                                "items": {
+                                    "type": "string",
+                                    "examples": [
+                                        "advpl.environments[].name",
+                                        "advpl.environments[].environment"
+                                    ],
+                                    "uniqueItems": true,
+                                    "description": "Nome do ambiente da configuração advpl.environments relacionado a este projeto"
+                                }
                             }
                         }
                     }
@@ -81,8 +108,10 @@
     "devDependencies": {
         "typescript": "^2.6.1",
         "vscode": "^1.1.21",
-        "tslint": "^5.8.0",
         "@types/node": "^8.10.25",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "tslint": "^5.11.0"
     }
 }
