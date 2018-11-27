@@ -1,20 +1,21 @@
 ![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) [![Build Status](https://travis-ci.com/AlencarGabriel/advpl-switch-project.svg?branch=master)](https://travis-ci.com/AlencarGabriel/advpl-switch-project) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/AlencarGabriel.advpl-switch-project.svg)
-# Troca de projeto ADvPL
+# Troca de projeto AdvPL
 
-Esta é a extensão que vai facilitar seus Debugs de projetos ADvPL com arquivos repetidos.
+Esta é a extensão que vai facilitar seus Debugs de projetos AdvPL com arquivos repetidos, e ainda a organizar melhor os projetos x ambientes.
 
 >**Estou muito feliz pelo seu Download e espero que goste!**
 
 ## Necessidade
 Assim como acontece com o tão querido TDS, quando há arquivos com o mesmo nome no Workspace, o Debug se "perde".
 
-Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá te ajudar a resolver este impasse em 1 minuto, basta fazer algumas configurações e pronto ;)
+Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá te ajudar a resolver este impasse em alguns minutos, basta fazer algumas configurações e pronto ;)
 
 ## Features
 
 Esta extensão possui as seguintes funcionalidades implementadas:
 
-* [Relacionar ambientes do ADvPL com o Projeto aberto](https://github.com/AlencarGabriel/advpl-switch-project/issues/8)
+* **[New]** [Relacionar ambientes do AdvPL com o Projeto aberto]
+* **[New]** Habilitar/Desabilitar todos os ambientes AdvPL
 * Trocar projeto ativo no Workspace
 * Remover últimos projetos
 
@@ -39,32 +40,55 @@ Por padrão o VSCode adiciona no Workspace Settings as pastas do Workspace. Esta
 ![Configuração](images/Configuracao.gif)
 
 ## Utilização
-A extensão é ativada sempre que um projeto ADvPL é aberto, ou o comando é chamado o comando `Trocar Projeto` manualmente.
+A extensão é ativada sempre que um projeto AdvPL é aberto, ou o comando é chamado o comando `Trocar Projeto` manualmente.
 
 > Esta extensão não reabre os arquivos que já estão abertos no editor.
 
 ![Utilização](images/Utilizacao.gif)
 
+## Relacionar Ambiente x Projeto
+É possível relacionar os ambientes da configuração `advpl.environments` com os projetos configurados no workspace `advpl.foldersProject`. Assim é possível organizar melhor os ambientes que estarão disponíveis na lista. **No fim deste arquivo há um exemplo de configuração.**
+
+> Este recurso só funcionará se a configuração `advpl.onlyRelatedEnvironments` estiver habilitada.
+
+![Relacionar Ambiente x Projeto](images/RelacionarAmbientes.gif)
+
 ## [Issues](https://github.com/AlencarGabriel/advpl-switch-project/issues)
 
 Caso encontre algum problema, tenha alguma dúvida ou sugestão de melhoria, fique a vontade para abrir uma Issue ou enviar um Pull Request.
 
- ## Extension Settings
+## Comandos da Extensão
+* `Advpl - Trocar projeto ativo`
+* `Advpl - Remover últimos projetos`
+* `Advpl - Habilitar todos os Ambientes`
+* `Advpl - Desabilitar todos os Ambientes`
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Configurações da Extensão
 
-For example:
+Esta extensão contribui com as seguintes configurações:
 
-This extension contributes the following settings:
+* **[New]** `advpl.onlyRelatedEnvironments: true;` // Mostrar somente os ambientes vinculados ao projeto
+* `advpl.projectActive: "Projeto padrão do Workspace";`
+* Pastas do projeto:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+```
+"advpl.foldersProject": [
+    {
+        "path": "Caminho da pasta do projeto",
+        "name": "Alias para o projeto",
+         "environments": [
+            "Environment A",
+            "Environment B"
+        ] // Ambientes da configuração advpl.environments relacionados a este projeto
+    }
+]
+```
 
 <!-- ## Known Issues
 
 Calling out known issues can help limit users opening duplicate issues against your extension. -->
 
------------------------------------------------------------------------------------------------------------
+---
 <!--
 ## Working with Markdown
 
