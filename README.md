@@ -14,7 +14,7 @@ Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá t
 
 Esta extensão possui as seguintes funcionalidades implementadas:
 
-* **[New]** [Relacionar ambientes do AdvPL com o Projeto aberto]
+* **[New]** Relacionar ambientes do AdvPL com o Projeto aberto
 * **[New]** Habilitar/Desabilitar todos os ambientes AdvPL
 * Trocar projeto ativo no Workspace
 * Remover últimos projetos
