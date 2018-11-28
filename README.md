@@ -21,6 +21,7 @@ Esta extensão possui as seguintes funcionalidades implementadas:
 
 Próximas implementações:
 
+* [Alterar ambiente ativo quando trocar projeto.](https://github.com/AlencarGabriel/advpl-switch-project/issues/14)
 * [Converter Workspace to Configuration.](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
 
@@ -37,6 +38,8 @@ Esta extensão depende da [advpl-vscode](https://marketplace.visualstudio.com/it
 ## Configuração
 Por padrão o VSCode adiciona no Workspace Settings as pastas do Workspace. Esta extensão manipula esta configuração conforme o projeto que está sendo usado.
 
+> No fim deste arquivo há um exemplo de configuração.
+
 ![Configuração](images/Configuracao.gif)
 
 ## Utilização
@@ -47,9 +50,17 @@ A extensão é ativada sempre que um projeto AdvPL é aberto, ou o comando é ch
 ![Utilização](images/Utilizacao.gif)
 
 ## Relacionar Ambiente x Projeto
-É possível relacionar os ambientes da configuração `advpl.environments` com os projetos configurados no workspace `advpl.foldersProject`. Assim é possível organizar melhor os ambientes que estarão disponíveis na lista. **No fim deste arquivo há um exemplo de configuração.**
+É possível relacionar os ambientes da configuração `advpl.environments` com os projetos configurados no workspace `advpl.foldersProject`. Assim é possível organizar melhor os ambientes que estarão disponíveis na lista.
+
+> No fim deste arquivo há um exemplo de configuração.
 
 > Este recurso só funcionará se a configuração `advpl.onlyRelatedEnvironments` estiver habilitada.
+
+### Importante:
+
+* Caso a configuração `advpl.environments` esteja nas **Configurações do Usuário**, deve ser transferido para as **Configurações do Workspace**;
+* Após transferir as configurações reinicie o VSCode;
+* Caso esteja usando o atributo **name** na configuração `advpl.environments`, deve estar no `advpl.foldersProject.environments[]` o nome dos ambientes, se não estiver usando **name** a extensão irá considerar o atributo **environment**.
 
 ![Relacionar Ambiente x Projeto](images/RelacionarAmbientes.gif)
 
@@ -76,7 +87,7 @@ Esta extensão contribui com as seguintes configurações:
     {
         "path": "Caminho da pasta do projeto",
         "name": "Alias para o projeto",
-         "environments": [
+        "environments": [
             "Environment A",
             "Environment B"
         ] // Ambientes da configuração advpl.environments relacionados a este projeto

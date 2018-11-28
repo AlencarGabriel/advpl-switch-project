@@ -5,10 +5,13 @@ All notable changes to the "advpl-switch-project" extension will be documented i
 ### Changed
 - Update and improvement of Polish translation from [@m-aciek](https://github.com/m-aciek). -->
 
+## [0.1.4] - 2018-11-28
+- Alterado documentação da extensão.
+
 ## [0.1.3] - 2018-11-27
 ### Added
 - [Relacionar ambientes do AdvPL com o Projeto aberto](https://github.com/AlencarGabriel/advpl-switch-project/issues/8)
-- Habilitar/Desabilitar todos os ambientes AdvPL
+- Habilitar/Desabilitar todos os ambientes AdvPL.
 
 ### Changed
 - Milestone [November 2018](https://github.com/AlencarGabriel/advpl-switch-project/milestone/1?closed=1)
