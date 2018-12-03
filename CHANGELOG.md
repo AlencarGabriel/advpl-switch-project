@@ -5,6 +5,12 @@ All notable changes to the "advpl-switch-project" extension will be documented i
 ### Changed
 - Update and improvement of Polish translation from [@m-aciek](https://github.com/m-aciek). -->
 
+## [0.1.5] - 2018-12-03
+- Desatualizado pacote event-stream para versão 3.3.4.
+- Removido pacote flatmap-stream.
+
+>**Ajustes feitos conforme [Alerta do GitHub](https://github.com/dominictarr/event-stream/issues/116) para pacotes maliciosos nas dependências do event-stream.**
+
 ## [0.1.4] - 2018-11-28
 - Alterado documentação da extensão.
 
