@@ -21,8 +21,9 @@ Esta extensão possui as seguintes funcionalidades implementadas:
 
 Próximas implementações:
 
-* [Alterar ambiente ativo quando trocar projeto.](https://github.com/AlencarGabriel/advpl-switch-project/issues/14)
-* [Converter Workspace to Configuration.](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
+* Comando para habilitar todos os Projetos;
+* [Alterar ambiente ativo quando trocar projeto;](https://github.com/AlencarGabriel/advpl-switch-project/issues/14)
+* [Converter Workspace to Configuration;](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
 
 ## Looking For...
@@ -42,12 +43,16 @@ Por padrão o VSCode adiciona no Workspace Settings as pastas do Workspace. Esta
 
 ![Configuração](images/Configuracao.gif)
 
+[Vídeo Exemplo](https://youtu.be/50u64KjCinI)
+
 ## Utilização
 A extensão é ativada sempre que um projeto AdvPL é aberto, ou o comando é chamado o comando `Trocar Projeto` manualmente.
 
 > Esta extensão não reabre os arquivos que já estão abertos no editor.
 
 ![Utilização](images/Utilizacao.gif)
+
+[Vídeo Exemplo](https://youtu.be/KEBQvz13B-Y)
 
 ## Relacionar Ambiente x Projeto
 É possível relacionar os ambientes da configuração `advpl.environments` com os projetos configurados no workspace `advpl.foldersProject`. Assim é possível organizar melhor os ambientes que estarão disponíveis na lista.
@@ -63,6 +68,8 @@ A extensão é ativada sempre que um projeto AdvPL é aberto, ou o comando é ch
 * Caso esteja usando o atributo **name** na configuração `advpl.environments`, deve estar no `advpl.foldersProject.environments[]` o nome dos ambientes, se não estiver usando **name** a extensão irá considerar o atributo **environment**.
 
 ![Relacionar Ambiente x Projeto](images/RelacionarAmbientes.gif)
+
+[Vídeo Exemplo](https://youtu.be/q1Gb4NDKoqQ)
 
 ## [Issues](https://github.com/AlencarGabriel/advpl-switch-project/issues)
 
