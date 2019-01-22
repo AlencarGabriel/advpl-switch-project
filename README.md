@@ -21,7 +21,7 @@ Esta extensão possui as seguintes funcionalidades implementadas:
 
 Próximas implementações:
 
-* Comando para habilitar todos os Projetos;
+* [Comando para habilitar todos os Projetos;](https://github.com/AlencarGabriel/advpl-switch-project/issues/16)
 * [Alterar ambiente ativo quando trocar projeto;](https://github.com/AlencarGabriel/advpl-switch-project/issues/14)
 * [Converter Workspace to Configuration;](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
