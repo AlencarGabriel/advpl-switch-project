@@ -45,6 +45,172 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addDisableEnvironments());
     context.subscriptions.push(addEnableEnvironments());
     context.subscriptions.push(addEnableProjects());
+
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(
+        { language: "advpl" }, new FooDocumentSymbolProvider()
+    ));
+}
+
+interface IAdvplSymbol {
+    /**
+     * Nome do Symbolo - Será exibido na outline
+     */
+    name: string;
+
+    /**
+     * Detalhe do símbolo - Informação complementar que será exibida na outline
+     */
+    detail: string;
+
+    /**
+     * Identificação do nível do símbolo
+     */
+    level: Number;
+
+    /**
+	 * O tipo desse símbolo.
+	 */
+    kind: vscode.SymbolKind;
+
+    /**
+	 * O intervalo que inclui esse símbolo não inclui espaço em branco inicial / final, mas todo o restante, por exemplo, comentários e código.
+	 */
+    range: vscode.Range;
+
+    /**
+     * O intervalo que deve ser selecionado e revela quando este símbolo está sendo escolhido, por exemplo, o nome de uma função.
+     */
+    selectionRange: vscode.Range;
+
+}
+
+enum LevelType {
+    UserFunction = 0,
+    StaticFunction = 0,
+    LocalVariables = 1,
+    PrivateVariables = 1
+}
+
+class AdvplSymbol implements IAdvplSymbol {
+    name: string;
+    detail: string;
+    level: LevelType;
+    kind: vscode.SymbolKind;
+    range: vscode.Range;
+    selectionRange: vscode.Range;
+
+    constructor(name: string, detail: string, level: LevelType, kind: vscode.SymbolKind, range: vscode.Range, selectionRange: vscode.Range) {
+        this.name = name;
+        this.detail = detail;
+        this.level = level;
+        this.kind = kind;
+        this.range = range;
+        this.selectionRange = selectionRange;
+    }
+
+    public getDocumentSymbol(): vscode.DocumentSymbol {
+        return new vscode.DocumentSymbol(
+            this.name,
+            this.detail,
+            this.kind,
+            this.range,
+            this.range,
+        )
+    }
+
+}
+
+class FooDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+
+    private compareSymbolWithLine(line: vscode.TextLine, symbol: string[]): Boolean {
+        let ret = true;
+
+        symbol.every(function (_value, _index, _arr) {
+            ret = line.text.toUpperCase().includes(_value.toUpperCase());
+            return ret;
+        });
+
+        return ret;
+    }
+
+    public provideDocumentSymbols(document: vscode.TextDocument,
+        token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
+
+        return new Promise((resolve, reject) => {
+
+            let symbols: vscode.DocumentSymbol[] = [];
+            let advplSymbols = [];
+
+            // Percorre o arquivo para encontrar os simbolos Advpl
+            for (let i = 0; i < document.lineCount; i++) {
+                let line = document.lineAt(i);
+
+                if (this.compareSymbolWithLine(line, ["User", "Function"])) {
+                    advplSymbols.push(
+                        new AdvplSymbol(
+                            line.text,
+                            "User Function AdvPL",
+                            LevelType.UserFunction,
+                            vscode.SymbolKind.Function,
+                            line.range,
+                            line.range
+                        )
+                    );
+                }
+
+                if (this.compareSymbolWithLine(line, ["Static", "Function"])) {
+                    advplSymbols.push(
+                        new AdvplSymbol(
+                            line.text,
+                            "Static Function AdvPL",
+                            LevelType.StaticFunction,
+                            vscode.SymbolKind.Function,
+                            line.range,
+                            line.range
+                        )
+                    );
+                }
+
+                if (this.compareSymbolWithLine(line, ["Local "])) {
+                    advplSymbols.push(
+                        new AdvplSymbol(
+                            line.text,
+                            "Local Variable AdvPL",
+                            LevelType.LocalVariables,
+                            vscode.SymbolKind.Variable,
+                            line.range,
+                            line.range
+                        )
+                    );
+                }
+            }
+
+            // Elemento PAI
+            let elementParent: number, elementChild: number;
+
+            advplSymbols.forEach(element => {
+                if (element.level === 0) {
+                    // Adiciona o simbolo PAI
+                    elementParent = symbols.push(
+                        element.getDocumentSymbol()
+                    ) - 1;
+                } else if (element.level === 1) {
+                    // Adiciona o simbolo Filho
+                    elementChild = symbols[elementParent].children.push(
+                        element.getDocumentSymbol()
+                    ) - 1;
+                } else if (element.level === 2) {
+                    symbols[elementChild].children.push(
+                        element.getDocumentSymbol()
+                    );
+                }
+            });
+
+            resolve(symbols);
+        });
+
+        // https://github.com/fabiospampinato/vscode-todo-plus/blob/master/src/providers/symbols.ts
+    }
 }
 
 function addSwitchProject() {
