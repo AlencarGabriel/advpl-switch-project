@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { window } from 'vscode';
 import { List } from './objects/List';
 import { StatusProject } from './objects/StatusProject';
+import { Project } from './objects/Project';
 import IEnvironment from './interfaces/IEnvironment';
 import IFolder from './interfaces/IFolder';
 
@@ -43,6 +44,7 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addSwitchProject());
     context.subscriptions.push(addDisableEnvironments());
     context.subscriptions.push(addEnableEnvironments());
+    context.subscriptions.push(addEnableProjects());
 }
 
 function addSwitchProject() {
@@ -52,7 +54,7 @@ function addSwitchProject() {
             window.showQuickPick(getPatches()).then((a => {
                 if (a) {
                     let _uri = vscode.Uri.parse("file:" + a.value);
-                    changeProject(_uri, a.label);
+                    changeProject(new Project(_uri, a.label));
                 } else {
                     window.showErrorMessage("Erro ao alterar o projeto.");
                 }
@@ -112,19 +114,53 @@ function addEnableEnvironments() {
     return disposable;
 }
 
+function addEnableProjects() {
+    let disposable = vscode.commands.registerCommand('switch.enableProjects', () => {
+
+        // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+        if (onlyRelatedEnvironments()) {
+            openAllProjects();
+            window.showInformationMessage("Todos os Projetos foram Habilitados.");
+        } else {
+            window.showInformationMessage("Este comando só terá efeito se a configuração 'advpl.onlyRelatedEnvironments' estiver habilitada.");
+        }
+
+    });
+
+    return disposable;
+}
+
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
 
-export function openWorkspace(uri: vscode.Uri, name: string) {
-    if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-        return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
-    } else {
-        return addWorkspace(uri, name);
+export function openAllProjects() {
+    let projects = Array<Project>();
+
+    getPatches().forEach(element => {
+        projects.push(new Project(vscode.Uri.parse("file:" + element.value), element.label));
+    });
+
+    if (vscode.workspace.workspaceFolders) {
+        return vscode.workspace.updateWorkspaceFolders(0, vscode.workspace.workspaceFolders.length, ...projects);
     }
 }
 
-export function addWorkspace(uri: vscode.Uri, name: string) {
+export function openWorkspace(prj: Project) {
+    let uri = prj.uri;
+    let name = prj.name;
+
+    if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+        return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
+    } else {
+        return addWorkspace(prj);
+    }
+}
+
+export function addWorkspace(prj: Project) {
+    let uri = prj.uri;
+    let name = prj.name;
+
     return vscode.workspace.updateWorkspaceFolders(0, 0, { uri, name });
 }
 
@@ -168,32 +204,32 @@ export function getPatches() {
     return patches;
 }
 
-export function changeProject(uri: vscode.Uri, label: string) {
+export function changeProject(prj: Project) {
     let updObj = vscode.workspace.getConfiguration("advpl");
 
     // Não deixa trocar para o mesmo projeto já aberto. Por algum motivo isso dá erro no VSCode quando se tenta trocar depois.
-    if (label === updObj.get<string>("projectActive")) {
+    if (prj.name === updObj.get<string>("projectActive")) {
         return;
     } else {
-        if (openWorkspace(uri, label)) {
+        if (openWorkspace(prj)) {
 
             // Atualiza a configuração setando o projeto ativo
-            updObj.update("projectActive", label); //.then(() => { // Usando o Promise está causando erro dentro do Then() inesplicável.
+            updObj.update("projectActive", prj.name); //.then(() => { // Usando o Promise está causando erro dentro do Then() inesplicável.
 
             // Atualiza a Status Bar
-            status.update(label);
+            status.update(prj.name);
 
             // Atualiza os ambientes que ficarão habilitados
-            disableEnvironments(label);
+            disableEnvironments(prj.name);
 
-            window.showInformationMessage("Projeto trocado para: " + label);
+            window.showInformationMessage("Projeto trocado para: " + prj.name);
             // Não é mais necessário pois ao invocar o debug do projeto, a variavel é atualizada automaticamente.
             // Chama o comando que atualiza a configuração 'workspaceFolders' utilizada pela extensão killerall.advpl-vscode
             // vscode.commands.executeCommand("advpl.getDebugInfos");
             // });
 
         } else {
-            window.showErrorMessage("Não foi possível alterar para o projeto: " + label, ...["Reload"]).then(() => {
+            window.showErrorMessage("Não foi possível alterar para o projeto: " + prj.name, ...["Reload"]).then(() => {
                 // Atualiza a janela para recarregar a extensão
                 vscode.commands.executeCommand("workbench.action.reloadWindow");
             });
