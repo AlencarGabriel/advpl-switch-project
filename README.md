@@ -1,4 +1,4 @@
-![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) [![Build Status](https://travis-ci.com/AlencarGabriel/advpl-switch-project.svg?branch=master)](https://travis-ci.com/AlencarGabriel/advpl-switch-project) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/AlencarGabriel.advpl-switch-project.svg)
+![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) [![Build Status](https://travis-ci.com/AlencarGabriel/advpl-switch-project.svg?branch=master)](https://travis-ci.com/AlencarGabriel/advpl-switch-project) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Downloads](https://vsmarketplacebadge.apphb.com/downloads/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-star/AlencarGabriel.advpl-switch-project.svg)
 # Troca de projeto AdvPL
 
 Esta é a extensão que vai facilitar seus Debugs de projetos AdvPL com arquivos repetidos, e ainda a organizar melhor os projetos x ambientes.
@@ -21,7 +21,7 @@ Esta extensão possui as seguintes funcionalidades implementadas:
 
 Próximas implementações:
 
-* Comando para habilitar todos os Projetos;
+* [Comando para habilitar todos os Projetos;](https://github.com/AlencarGabriel/advpl-switch-project/issues/16)
 * [Alterar ambiente ativo quando trocar projeto;](https://github.com/AlencarGabriel/advpl-switch-project/issues/14)
 * [Converter Workspace to Configuration;](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
