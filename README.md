@@ -14,15 +14,16 @@ Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá t
 
 Esta extensão possui as seguintes funcionalidades implementadas:
 
-* **[New]** Relacionar ambientes do AdvPL com o Projeto aberto
-* **[New]** Habilitar/Desabilitar todos os ambientes AdvPL
-* Trocar projeto ativo no Workspace
-* Remover últimos projetos
+* **[New]** Habilitar/Desabilitar todos os Projetos;
+* **[New]** Alterar ambiente ativo ao trocar de Projeto;
+* **[New]** Mostrar todos os ambientes caso o Projeto não tenha ambientes relacionados;
+* Relacionar ambientes do AdvPL com o Projeto aberto;
+* Habilitar/Desabilitar todos os ambientes AdvPL;
+* Trocar projeto ativo no Workspace;
+* Remover últimos projetos.
 
 Próximas implementações:
 
-* [Comando para habilitar todos os Projetos;](https://github.com/AlencarGabriel/advpl-switch-project/issues/16)
-* [Alterar ambiente ativo quando trocar projeto;](https://github.com/AlencarGabriel/advpl-switch-project/issues/14)
 * [Converter Workspace to Configuration;](https://github.com/AlencarGabriel/advpl-switch-project/issues/2)
 * [Wizard para adicionar projetos.](https://github.com/AlencarGabriel/advpl-switch-project/issues/3)
 
