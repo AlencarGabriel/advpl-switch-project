@@ -81,12 +81,14 @@ Caso encontre algum problema, tenha alguma dúvida ou sugestão de melhoria, fiq
 * `Advpl - Remover últimos projetos`
 * `Advpl - Habilitar todos os Ambientes`
 * `Advpl - Desabilitar todos os Ambientes`
+* `Advpl - Desabilitar todos os Projetos`
+* `Advpl - Habilitar todos os Projetos`
 
 ## Configurações da Extensão
 
 Esta extensão contribui com as seguintes configurações:
 
-* **[New]** `advpl.onlyRelatedEnvironments: true;` // Mostrar somente os ambientes vinculados ao projeto
+* `advpl.onlyRelatedEnvironments: true;` // Mostrar somente os ambientes vinculados ao projeto
 * `advpl.projectActive: "Projeto padrão do Workspace";`
 * Pastas do projeto:
 
