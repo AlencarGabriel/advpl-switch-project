@@ -2,9 +2,9 @@
     "name": "advpl-switch-project",
     "displayName": "AdvPL Switch Project",
     "description": "Extensão que adiciona o recurso que permite a troca do projeto AdvPL ativo no workspace do VSCode.",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "publisher": "AlencarGabriel",
-    "icon": "images/Icon.png",
+    "icon": "images/Icon2.png",
     "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",
     "repository": {
         "type": "git",
