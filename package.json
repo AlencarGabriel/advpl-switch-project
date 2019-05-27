@@ -2,7 +2,7 @@
     "name": "advpl-switch-project",
     "displayName": "AdvPL Switch Project",
     "description": "Extensão que adiciona o recurso que permite a troca do projeto AdvPL ativo no workspace do VSCode.",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "publisher": "AlencarGabriel",
     "icon": "images/Icon.png",
     "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",
@@ -114,13 +114,9 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "@types/mocha": "^2.2.42",
-        "@types/node": "^8.10.48",
         "typescript": "^2.6.1",
-        "vscode": "^1.1.34"
-    },
-    "dependencies": {
-        "event-stream": "^3.3.5",
-        "tslint": "^5.16.0"
+        "vscode": "^1.1.21",
+        "@types/node": "^8.10.25",
+        "@types/mocha": "^2.2.42"
     }
 }

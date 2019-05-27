@@ -15,7 +15,7 @@ export class StatusProject {
             this._selectedProject = selectedProject;
         }
 
-        this._statusBarItem.text = "$(squirrel) " + this._selectedProject;
+        this._statusBarItem.text = "$(file-directory) " + this._selectedProject;
         this._statusBarItem.show();
     }
 }
