@@ -1,5 +1,6 @@
-![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) [![Build Status](https://travis-ci.com/AlencarGabriel/advpl-switch-project.svg?branch=master)](https://travis-ci.com/AlencarGabriel/advpl-switch-project) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Downloads](https://vsmarketplacebadge.apphb.com/downloads/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-star/AlencarGabriel.advpl-switch-project.svg)
-# Troca de projeto AdvPL
+![Version](https://vsmarketplacebadge.apphb.com/version/AlencarGabriel.advpl-switch-project.svg) ![Installs](https://vsmarketplacebadge.apphb.com/installs/AlencarGabriel.advpl-switch-project.svg) ![Downloads](https://vsmarketplacebadge.apphb.com/downloads/AlencarGabriel.advpl-switch-project.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-star/AlencarGabriel.advpl-switch-project.svg)
+
+# AdvPL Project Manager
 
 Esta é a extensão que vai facilitar seus Debugs de projetos AdvPL com arquivos repetidos, e ainda a organizar melhor os projetos x ambientes.
 

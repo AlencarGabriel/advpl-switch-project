@@ -5,6 +5,10 @@ All notable changes to the "advpl-switch-project" extension will be documented i
 ### Changed
 - Update and improvement of Polish translation from [@m-aciek](https://github.com/m-aciek). -->
 
+## [0.3.1] - 2019-07-12
+### Removed
+- Removido temporariamente box da Build do Travis que estava apontando como "Build Failing" nos testes no ambiente Linux, porem foi verificado e não havia problema na extensão, e sim algo relacionado à ultima versão do Framework de testes do VsCode para Linux.
+
 ## [0.3.0] - 2019-07-12
 ### Changed
 - Renomeado Nome e Descrição da extensão para melhorar nos resultados de pesquisa.

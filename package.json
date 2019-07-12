@@ -1,8 +1,8 @@
 {
     "name": "advpl-switch-project",
     "displayName": "AdvPL Project Manager",
-    "description": "Extensão que adiciona o recurso para manipular projetos AdvPL ativos no workspace do VSCode.",
-    "version": "0.3.0",
+    "description": "Suporte a gerenciamento de Projetos AdvPL para VSCode.",
+    "version": "0.3.1",
     "publisher": "AlencarGabriel",
     "icon": "images/Icon2.png",
     "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",
