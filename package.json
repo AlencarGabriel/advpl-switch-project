@@ -30,6 +30,21 @@
     ],
     "main": "./out/extension",
     "contributes": {
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "switch.setDefault",
+                    "when": "view == serversManagement && viewItem =~ /Environment/",
+                    "group": "switchProject"
+                }
+            ]
+        },
+        "commandPalette": [
+            {
+                "command": "switch.setDefault",
+                "when": "config.noExists"
+            }
+        ],
         "commands": [
             {
                 "command": "switch.switchProject",
@@ -54,6 +69,10 @@
             {
                 "command": "switch.enableProjects",
                 "title": "Advpl - Habilitar todos os Projetos"
+            },
+            {
+                "command": "switch.setDefault",
+                "title": "Definir como Padrão"
             }
         ],
         "configuration": {
@@ -94,12 +113,21 @@
                                 "items": {
                                     "type": "string",
                                     "examples": [
-                                        "advpl.environments[].name",
-                                        "advpl.environments[].environment"
+                                        "advpl.environments[x].name",
+                                        "advpl.environments[x].environment"
                                     ],
                                     "uniqueItems": true,
                                     "description": "Nome do ambiente da configuração advpl.environments relacionado a este projeto"
                                 }
+                            },
+                            "environment_default": {
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "advpl.environments[x].name",
+                                    "advpl.environments[x].environment"
+                                ],
+                                "description": "Ambiente padrão do Projeto"
                             }
                         }
                     }

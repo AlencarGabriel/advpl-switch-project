@@ -7,7 +7,6 @@ import { StatusProject } from './objects/StatusProject';
 import { Project } from './objects/Project';
 import IEnvironment from './interfaces/IEnvironment';
 import IFolder from './interfaces/IFolder';
-import { resolve } from 'path';
 
 let status: StatusProject;
 
@@ -73,13 +72,14 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addDisableEnvironments());
     context.subscriptions.push(addEnableEnvironments());
     context.subscriptions.push(addEnableProjects());
+    context.subscriptions.push(addSetDefault());
 }
 
 function addSwitchProject() {
     let disposable = vscode.commands.registerCommand('switch.switchProject', () => {
 
         if (checkWorkspaceFolders()) {
-            window.showQuickPick(getPatches()).then((a => {
+            window.showQuickPick(getPatches(false)).then((a => {
                 if (a) {
                     let _uri = vscode.Uri.parse("file:" + a.value);
                     changeProject(new Project(_uri, a.label));
@@ -195,6 +195,49 @@ function addEnableProjects() {
     return disposable;
 }
 
+function addSetDefault() {
+    let disposable = vscode.commands.registerCommand('switch.setDefault', (element) => {
+
+        let config = vscode.workspace.getConfiguration("advpl");
+        let projectActive = config.get<string>("projectActive");
+        let folders = config.get<Array<IFolder>>("foldersProject");
+
+        // Verifica se existe a configurção de projetos
+        if (folders) {
+            if (folders.length === 0) {
+                window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                    if (e === "Configurações") {
+                        vscode.commands.executeCommand("workbench.action.openSettings");
+                    }
+                });
+            }
+
+            folders.map(_folder => {
+                // Altera o ambiente Default do projeto que está conectado
+                if (_folder.name.trim() === projectActive) {
+                    _folder.environment_default = element.label;
+                }
+            });
+
+            // Altera as configurações dos projetos
+            config.update("foldersProject", folders).then(e => {
+                vscode.window.showInformationMessage("Ambiente " + element.label + " definido como Padrão.");
+            });
+
+        } else {
+            window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                if (e === "Configurações") {
+                    vscode.commands.executeCommand("workbench.action.openSettings");
+                }
+            });
+        }
+
+
+    });
+
+    return disposable;
+}
+
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
@@ -256,11 +299,14 @@ export function removeWorkspace(uri: vscode.Uri) {
     return vscode.workspace.updateWorkspaceFolders(workspaceFolder.index, 1);
 }
 
-export function getPatches() {
+export function getPatches(fetchAll: boolean = true) {
     let patches: Array<List> = [];
-    let folders = vscode.workspace.getConfiguration("advpl").get<Array<Folder>>("foldersProject");
+    let config = vscode.workspace.getConfiguration("advpl");
+    let folders = config.get<Array<IFolder>>("foldersProject");
+    let projectActive = config.get<string>("projectActive");
 
-    if (folders) {
+    // Verifica se existe a configurção de projetos e de projeto ativo
+    if (folders && projectActive) {
         if (folders.length === 0) {
             window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
                 if (e === "Configurações") {
@@ -270,9 +316,17 @@ export function getPatches() {
         }
 
         for (let i = 0; i < folders.length; i++) {
-            patches.push(
-                new List(folders[i].name, "", folders[i].path)
-            );
+            // Não retorna o projeto que já está conectado caso a chamada seja pelo QuickPick
+            if ((projectActive.trim() !== folders[i].name.trim() && !fetchAll) || fetchAll) {
+                patches.push(
+                    new List(
+                        folders[i].name,
+                        folders[i].path,
+                        folders[i].path,
+                        folders[i].environment_default
+                    )
+                );
+            }
         }
     } else {
         window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
