@@ -73,6 +73,7 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addEnableEnvironments());
     context.subscriptions.push(addEnableProjects());
     context.subscriptions.push(addSetDefault());
+    context.subscriptions.push(addAddProject());
 }
 
 function addSwitchProject() {
@@ -223,6 +224,63 @@ function addSetDefault() {
             config.update("foldersProject", folders).then(e => {
                 vscode.window.showInformationMessage("Ambiente " + element.label + " definido como Padrão.");
             });
+
+        } else {
+            window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                if (e === "Configurações") {
+                    vscode.commands.executeCommand("workbench.action.openSettings");
+                }
+            });
+        }
+
+
+    });
+
+    return disposable;
+}
+
+function addAddProject() {
+    let disposable = vscode.commands.registerCommand('switch.addProject', (element) => {
+
+        let config = vscode.workspace.getConfiguration("advpl");
+        let projectActive = config.get<string>("projectActive");
+        let folders = config.get<Array<IFolder>>("foldersProject");
+        let adicionou = false;
+
+        // Verifica se existe a configurção de projetos
+        if (folders) {
+            if (folders.length === 0) {
+                window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                    if (e === "Configurações") {
+                        vscode.commands.executeCommand("workbench.action.openSettings");
+                    }
+                });
+            }
+
+            folders.map(_folder => {
+                // Adiciona o ambiente desejado ao projeto que está conectado
+                if (_folder.name.trim() === projectActive) {
+                    if (_folder.environments) {
+                        // Verifica se o ambiente em questão já está associado ao projeto
+                        if (!_folder.environments.find(env => env.toUpperCase() === element.label.toUpperCase())) {
+                            _folder.environments.push(element.label);
+                            adicionou = true;
+                        }
+                    } else {
+                        _folder.environments = new Array<string>(element.label);
+                        adicionou = true;
+                    }
+                }
+            });
+
+            // Altera as configurações dos projetos
+            if (adicionou) {
+                config.update("foldersProject", folders).then(e => {
+                    vscode.window.showInformationMessage("Ambiente " + element.label + " associado ao projeto " + projectActive + ".");
+                });
+            }else{
+                vscode.window.showWarningMessage("Ambiente " + element.label + " já está associado ao projeto " + projectActive + ".");
+            }
 
         } else {
             window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
