@@ -36,12 +36,30 @@
                     "command": "switch.setDefault",
                     "when": "view == serversManagement && viewItem =~ /Environment/",
                     "group": "switchProject"
+                },
+                {
+                    "command": "switch.addProject",
+                    "when": "view == serversManagement && viewItem =~ /Environment/",
+                    "group": "switchProject"
+                },
+                {
+                    "command": "switch.delProject",
+                    "when": "view == serversManagement && viewItem =~ /Environment/",
+                    "group": "switchProject"
                 }
             ]
         },
         "commandPalette": [
             {
                 "command": "switch.setDefault",
+                "when": "config.noExists"
+            },
+            {
+                "command": "switch.addProject",
+                "when": "config.noExists"
+            },
+            {
+                "command": "switch.delProject",
                 "when": "config.noExists"
             }
         ],
@@ -73,6 +91,14 @@
             {
                 "command": "switch.setDefault",
                 "title": "Definir como Padrão"
+            },
+            {
+                "command": "switch.addProject",
+                "title": "Associar ao Projeto"
+            },
+            {
+                "command": "switch.delProject",
+                "title": "Desassociar do Projeto"
             }
         ],
         "configuration": {
