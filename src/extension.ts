@@ -74,6 +74,7 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addEnableProjects());
     context.subscriptions.push(addSetDefault());
     context.subscriptions.push(addAddProject());
+    context.subscriptions.push(addDelProject());
 }
 
 function addSwitchProject() {
@@ -276,10 +277,93 @@ function addAddProject() {
             // Altera as configurações dos projetos
             if (adicionou) {
                 config.update("foldersProject", folders).then(e => {
-                    vscode.window.showInformationMessage("Ambiente " + element.label + " associado ao projeto " + projectActive + ".");
+                    let projectActive = vscode.workspace.getConfiguration("advpl").get<string>("projectActive");
+
+                    // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+                    if (onlyRelatedEnvironments()) {
+                        vscode.window.showInformationMessage("Ambiente " + element.label + " associado ao projeto " + projectActive + ".", ...["Recarregar Projeto"]).then(e => {
+                            // Recarrega o projeto, mostrando apenas os ambientes relacionados a ele
+                            if (projectActive) {
+                                disableEnvironments(projectActive);
+                            }
+                        });
+                    } else {
+                        vscode.window.showInformationMessage("Ambiente " + element.label + " associado ao projeto " + projectActive + ".");
+                    }
                 });
-            }else{
+            } else {
                 vscode.window.showWarningMessage("Ambiente " + element.label + " já está associado ao projeto " + projectActive + ".");
+            }
+
+        } else {
+            window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                if (e === "Configurações") {
+                    vscode.commands.executeCommand("workbench.action.openSettings");
+                }
+            });
+        }
+
+
+    });
+
+    return disposable;
+}
+
+function addDelProject() {
+    let disposable = vscode.commands.registerCommand('switch.delProject', (element) => {
+
+        let config = vscode.workspace.getConfiguration("advpl");
+        let projectActive = config.get<string>("projectActive");
+        let folders = config.get<Array<IFolder>>("foldersProject");
+        let removeu = false;
+
+        // Verifica se existe a configurção de projetos
+        if (folders) {
+            if (folders.length === 0) {
+                window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
+                    if (e === "Configurações") {
+                        vscode.commands.executeCommand("workbench.action.openSettings");
+                    }
+                });
+            }
+
+            folders.map(_folder => {
+                // Adiciona o ambiente desejado ao projeto que está conectado
+                if (_folder.name.trim() === projectActive) {
+                    if (_folder.environments) {
+                        // Verifica se o ambiente em questão já está associado ao projeto
+                        if (_folder.environments.find(env => env.toUpperCase() === element.label.toUpperCase())) {
+                            // Remove o ambiente da relação de ambientes do projeto
+                            _folder.environments.splice(
+                                _folder.environments.findIndex(env => env.toUpperCase() === element.label.toUpperCase()),
+                                1);
+                            removeu = true;
+                        }
+                    }
+                }
+            });
+
+            // Altera as configurações dos projetos
+            if (removeu) {
+                config.update("foldersProject", folders).then(e => {
+                    let projectActive = vscode.workspace.getConfiguration("advpl").get<string>("projectActive");
+
+                    // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
+                    if (onlyRelatedEnvironments()) {
+
+                        // Caso tenha configurado o projeto ativo, deixa habilitado os ambientes relacionados
+                        if (projectActive) {
+                            // Recarrega o projeto, mostrando apenas os ambientes relacionados a ele
+                            disableEnvironments(projectActive).then(e => {
+                                vscode.window.showInformationMessage("Ambiente " + element.label + " removido do projeto " + projectActive + ".");
+                            });
+                        }
+                    } else {
+                        vscode.window.showInformationMessage("Ambiente " + element.label + " removido do projeto " + projectActive + ".");
+                    }
+                });
+            } else {
+                vscode.window.showWarningMessage("Ambiente " + element.label + " não está associado ao projeto " + projectActive + ".");
             }
 
         } else {
