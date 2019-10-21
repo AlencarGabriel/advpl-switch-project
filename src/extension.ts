@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Verifica antes de tudo se a extensão KillerAll.advpl-vscode está instalada.
     if (!advplVsCode) {
-        window.showWarningMessage("A extensão KillerAll.advpl-vscode não está instalada, instale-a antes de usar esta.", ...["Instalar"]).then((e => {
+        window.showWarningMessage("A extensão KillerAll.advpl-vscode não está instalada, recomenda-se instalá-la antes de usar esta.", ...["Instalar"]).then((e => {
             if (e === "Instalar") {
                 vscode.commands.executeCommand("workbench.extensions.action.installExtensions");
             }
