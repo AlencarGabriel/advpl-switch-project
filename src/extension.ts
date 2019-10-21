@@ -14,26 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
     let advplVsCode = vscode.extensions.getExtension("KillerAll.advpl-vscode");
 
     // Verifica antes de tudo se a extensão KillerAll.advpl-vscode está instalada.
-    if (advplVsCode) {
-        // if (!advplVsCode.isActive) {
-        //     window.showWarningMessage("A extensão KillerAll.advpl-vscode está desativada, ative-a antes de usar esta.", ...["Ativar"]).then((e => {
-        //         if (e === "Ativar") {
-        //             // vscode.commands.executeCommand("workbench.extensions.action.showDisabledExtensions");
-        //             if  (advplVsCode){
-        //                 advplVsCode.activate();
-        //             }
-        //         }
-        //     }));
-        // }else{
-        Initialize(context);
-        // }
-    } else {
+    if (!advplVsCode) {
         window.showWarningMessage("A extensão KillerAll.advpl-vscode não está instalada, instale-a antes de usar esta.", ...["Instalar"]).then((e => {
             if (e === "Instalar") {
                 vscode.commands.executeCommand("workbench.extensions.action.installExtensions");
             }
         }));
     }
+
+    Initialize(context);
 }
 
 export function Initialize(context: vscode.ExtensionContext) {
