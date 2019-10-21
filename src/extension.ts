@@ -48,7 +48,7 @@ export function Initialize(context: vscode.ExtensionContext) {
                     if (vscode.workspace.workspaceFolders.length > 1) {
                         disableEnvironments("", true);
                     } else {
-                        // senão apenas os do projeto aberto
+                        // se não apenas os do projeto aberto
                         disableEnvironments(prjActive);
                     }
                 }
@@ -388,6 +388,7 @@ export function openAllProjects(): Thenable<void> {
             }
 
             resolve();
+
         });
 
     });
@@ -525,12 +526,19 @@ export function checkWorkspaceFolders(): Boolean {
     return true;
 }
 
-function disableEnvironments(projectName: string, forceEnabled: boolean = false): Thenable<void> {
+function disableEnvironments(projectName: string, forceEnabled: boolean = false, envParamDefault?: string | undefined): Thenable<void> {
     // Busca as configurações
     const config = vscode.workspace.getConfiguration("advpl");
 
     // Busca os ambientes configurados
     let environments = config.get<Array<IEnvironment>>("environments");
+
+    let envDefault: string | undefined;
+
+    // Tratamento para caso tenha sido passado por recursividade
+    if (envParamDefault) {
+        envDefault = envParamDefault;
+    }
 
     // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
     if (onlyRelatedEnvironments()) {
@@ -545,6 +553,9 @@ function disableEnvironments(projectName: string, forceEnabled: boolean = false)
             if (project) {
                 // Guarda os ambientes que foram relacionados com o projeto
                 let environmentProjects = project.environments;
+
+                // Guarda o ambiente Default do projeto
+                envDefault = project.environment_default;
 
                 // Se a configuração de ambientes relacionados ao projeto estiver setada e pelo menos 1 ambiente definido
                 if (environmentProjects) {
@@ -566,11 +577,11 @@ function disableEnvironments(projectName: string, forceEnabled: boolean = false)
                         }
                     } else {
                         // Habilita todos os ambientes caso o projeto não tenha ambientes informados
-                        disableEnvironments("", true);
+                        disableEnvironments("", true, envDefault);
                     }
                 } else {
                     // Habilita todos os ambientes caso o projeto não tenha ambientes informados
-                    disableEnvironments("", true);
+                    disableEnvironments("", true, envDefault);
                 }
             } else {
                 if (environments) {
@@ -593,30 +604,43 @@ function disableEnvironments(projectName: string, forceEnabled: boolean = false)
 
     return new Promise(function (resolve) {
         config.update("environments", environments).then(e => {
-            changeEnvironment(environments, config).then(e => {
+            changeEnvironment(config, environments, envDefault).then(e => {
                 resolve();
             });
         });
     });
 }
 
-export function changeEnvironment(environments: Array<IEnvironment> | undefined, config: vscode.WorkspaceConfiguration): Thenable<void> {
+export function changeEnvironment(config: vscode.WorkspaceConfiguration,
+    environments: Array<IEnvironment> | undefined,
+    envDefault: string | undefined): Thenable<void> {
 
     return new Promise(function (resolve) {
 
-        // Após atualizar os ambientes, mantem ativo o primeiro que não está desabilitado
+        // Após atualizar os ambientes, mantem ativo o ambiente Default ou o primeiro que não está desabilitado
         if (environments) {
+
             let envEnabled = environments.filter(env => env.enable !== false);
 
-            if (envEnabled.length > 0) {
-                config.update("selectedEnvironment", envEnabled[0].name ? envEnabled[0].name : envEnabled[0].environment).then(e => {
+            // Verifica se o Ambiente Default está definido e pertence a lista de ambientes do projeto
+            if (envEnabled.find(env => (env.name ? env.name : env.environment) === envDefault)) {
+                config.update("selectedEnvironment", envDefault).then(e => {
                     resolve();
                 });
             } else {
-                config.update("selectedEnvironment", "Selecione o Ambiente").then(e => {
-                    resolve();
-                });
+
+                if (envEnabled.length > 0) {
+                    config.update("selectedEnvironment", envEnabled[0].name ? envEnabled[0].name : envEnabled[0].environment).then(e => {
+                        resolve();
+                    });
+                } else {
+                    config.update("selectedEnvironment", "Selecione o Ambiente").then(e => {
+                        resolve();
+                    });
+                }
+
             }
+
         } else {
             resolve();
         }
