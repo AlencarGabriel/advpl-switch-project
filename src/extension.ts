@@ -436,6 +436,7 @@ export function getPatches(fetchAll: boolean = true) {
     let config = vscode.workspace.getConfiguration("advpl");
     let folders = config.get<Array<IFolder>>("foldersProject");
     let projectActive = config.get<string>("projectActive");
+    let showProjectPath = config.get<boolean>("showProjectPath");
 
     // Verifica se existe a configurção de projetos e de projeto ativo
     if (folders && projectActive) {
@@ -453,9 +454,9 @@ export function getPatches(fetchAll: boolean = true) {
                 patches.push(
                     new List(
                         folders[i].name,
+                        folders[i].environment_default,
                         folders[i].path,
-                        folders[i].path,
-                        folders[i].environment_default
+                        showProjectPath ? folders[i].path : ""
                     )
                 );
             }

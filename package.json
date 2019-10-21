@@ -157,6 +157,11 @@
                             }
                         }
                     }
+                },
+                "advpl.showProjectPath": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Mostra o caminho do projeto na lista"
                 }
             }
         }
