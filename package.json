@@ -47,6 +47,18 @@
                     "when": "view == serversManagement && viewItem =~ /Environment/",
                     "group": "switchProject"
                 }
+            ],
+            "view/title": [
+                {
+                    "command": "switch.enableEnvironments",
+                    "when": "view == serversManagement",
+                    "group": "navigation"
+                },
+                {
+                    "command": "switch.disableEnvironments",
+                    "when": "view == serversManagement",
+                    "group": "navigation"
+                }
             ]
         },
         "commandPalette": [
@@ -74,11 +86,19 @@
             },
             {
                 "command": "switch.disableEnvironments",
-                "title": "Advpl - Desabilitar todos os Ambientes"
+                "title": "Advpl - Desabilitar Ambientes fora do Projeto",
+                "icon": {
+                    "light": "images/fold.svg",
+                    "dark": "images/fold_dark.svg"
+                }
             },
             {
                 "command": "switch.enableEnvironments",
-                "title": "Advpl - Habilitar todos os Ambientes"
+                "title": "Advpl - Habilitar todos os Ambientes",
+                "icon": {
+                    "light": "images/unfold.svg",
+                    "dark": "images/unfold_dark.svg"
+                }
             },
             {
                 "command": "switch.removeLastWorkspace",
@@ -178,5 +198,8 @@
         "vscode": "^1.1.21",
         "@types/node": "^8.10.25",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "vsce": "^1.68.0"
     }
 }
