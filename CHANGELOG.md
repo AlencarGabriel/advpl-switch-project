@@ -5,6 +5,29 @@ All notable changes to the "advpl-switch-project" extension will be documented i
 ### Changed
 - Update and improvement of Polish translation from [@m-aciek](https://github.com/m-aciek). -->
 
+## [0.X.x] - 2020-01-14 - New Year Release
+### Removed
+
+### Changed
+- Alterado Lista de seleção de projetos para mostrar o ambiente ativo, a URI do projeto;
+- Alterado lista de seleção de projetos para não mostrar o projeto que está conectado;
+- Ajustado forma de recomendação da Extensão;
+- Renomeado comando de desabilitar todos os ambientes, para ficar mais claro sua função;
+
+### Added
+- Criado configuração na lista de projetos para armazenar o ambiente Default;
+- Adicionado no menu de contexto da View de Gerenciamento de servidores o comando para definir um ambiente como Default;
+- Implementado comando para  definir um ambiente como Default de um projeto;
+- [Implementado uso do Ambiente Default #20](https://github.com/AlencarGabriel/advpl-switch-project/issues/20);
+    - Agora será considerado nas alternâncias de ambiente/projeto o ambiente default, não o primeiro da lista;
+- [Implementado comando para Associar um ambiente ao Projeto Ativo #21](https://github.com/AlencarGabriel/advpl-switch-project/issues/21);
+- Implementado configuração que permite ao usuário escolher se deseja mostrar o caminho dos projetos ou não;
+- Adicionado ícones na view do gerenciador de ambientes para permitir habilitar/desabilitar todos os ambientes;
+
+### Agradecimentos da Versão:
+- Diogo Henrique;
+- Vinicius Nascimento.
+
 ## [0.3.1] - 2019-07-12
 ### Removed
 - Removido temporariamente box da Build do Travis que estava apontando como "Build Failing" nos testes no ambiente Linux, porem foi verificado e não havia problema na extensão, e sim algo relacionado à ultima versão do Framework de testes do VsCode para Linux.
