@@ -14,14 +14,14 @@
         "url": "https://github.com/AlencarGabriel/advpl-switch-project/issues",
         "email": "alencargabriel@outlook.com.br"
     },
-    "extensionDependencies": [
-        "KillerAll.advpl-vscode"
-    ],
     "engines": {
         "vscode": "^1.27.0"
     },
     "categories": [
         "Other"
+    ],
+    "recommendations": [
+        "killerall.advpl-vscode"
     ],
     "activationEvents": [
         "onLanguage:advpl",
