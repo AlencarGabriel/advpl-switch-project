@@ -15,9 +15,14 @@ Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá t
 
 Esta extensão possui as seguintes funcionalidades implementadas:
 
-* **[New]** Habilitar/Desabilitar todos os Projetos;
-* **[New]** Alterar ambiente ativo ao trocar de Projeto;
-* **[New]** Mostrar todos os ambientes caso o Projeto não tenha ambientes relacionados;
+* **[New]** Habilitar/desabilitar todos os ambientes pela View de Gerenciamento de Ambientes;
+* **[New]** Mostrar o caminho do projeto na lista de seleção de Projetos;
+* **[New]** Associar um ambiente da lista ao Projeto Ativo;
+* **[New]** Definir ambiente Default para o Projeto;
+    * Agora será considerado nas alternâncias de ambiente/projeto o ambiente default, não o primeiro da lista;
+* Habilitar/Desabilitar todos os Projetos;
+* Alterar ambiente ativo ao trocar de Projeto;
+* Mostrar todos os ambientes caso o Projeto não tenha ambientes relacionados;
 * Relacionar ambientes do AdvPL com o Projeto aberto;
 * Habilitar/Desabilitar todos os ambientes AdvPL;
 * Trocar projeto ativo no Workspace;
@@ -78,19 +83,28 @@ A extensão é ativada sempre que um projeto AdvPL é aberto, ou o comando é ch
 Caso encontre algum problema, tenha alguma dúvida ou sugestão de melhoria, fique a vontade para abrir uma Issue ou enviar um Pull Request.
 
 ## Comandos da Extensão
+### Command Palette:
 * `Advpl - Trocar projeto ativo`
 * `Advpl - Remover últimos projetos`
 * `Advpl - Habilitar todos os Ambientes`
-* `Advpl - Desabilitar todos os Ambientes`
+* `Advpl - Desabilitar Ambientes fora do Projeto`
 * `Advpl - Desabilitar todos os Projetos`
 * `Advpl - Habilitar todos os Projetos`
+
+
+### View item context - Gerenciador de Ambientes:
+* `Definir [ambiente] como Padrão [do Projeto]`
+* `Associar [Ambiente] ao Projeto`
+* `Desassociar [Ambiente] do Projeto`
 
 ## Configurações da Extensão
 
 Esta extensão contribui com as seguintes configurações:
 
-* `advpl.onlyRelatedEnvironments: true;` // Mostrar somente os ambientes vinculados ao projeto
+* `advpl.onlyRelatedEnvironments: false;` // true = Mostrar somente os ambientes vinculados ao projeto
 * `advpl.projectActive: "Projeto padrão do Workspace";`
+* `advpl.showProjectPath": true;` // true = Mostra o caminho do projeto na lista de Projetos
+
 * Pastas do projeto:
 
 ```
@@ -101,7 +115,8 @@ Esta extensão contribui com as seguintes configurações:
         "environments": [
             "Environment A",
             "Environment B"
-        ] // Ambientes da configuração advpl.environments relacionados a este projeto
+        ], // Ambientes da configuração advpl.environments relacionados a este projeto
+        "environment_default": "Ambiente padrão do Projeto"
     }
 ]
 ```

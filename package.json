@@ -2,7 +2,7 @@
     "name": "advpl-switch-project",
     "displayName": "AdvPL Project Manager",
     "description": "Suporte a gerenciamento de Projetos AdvPL para VSCode.",
-    "version": "0.4.5",
+    "version": "0.7.5",
     "publisher": "AlencarGabriel",
     "icon": "images/Icon2.png",
     "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",
@@ -181,7 +181,7 @@
                 "advpl.showProjectPath": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Mostra o caminho do projeto na lista"
+                    "description": "Mostra o caminho do projeto na lista de Projetos"
                 }
             }
         }
