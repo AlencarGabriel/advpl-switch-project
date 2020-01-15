@@ -75,7 +75,7 @@ function addSwitchProject() {
                     let _uri = vscode.Uri.parse("file:" + a.value);
                     changeProject(new Project(_uri, a.label));
                 } else {
-                    window.showErrorMessage("Erro ao alterar o projeto.");
+                    window.showWarningMessage("Projeto não selecionado.");
                 }
             }));
         }
