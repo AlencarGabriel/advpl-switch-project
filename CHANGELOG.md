@@ -5,19 +5,18 @@ All notable changes to the "advpl-switch-project" extension will be documented i
 ### Changed
 - Update and improvement of Polish translation from [@m-aciek](https://github.com/m-aciek). -->
 
-## [0.X.x] - 2020-01-14 - New Year Release
-### Removed
+## [0.4.5] - 2020-01-15 - New Year Release
 
 ### Changed
 - Alterado Lista de seleção de projetos para mostrar o ambiente ativo, a URI do projeto;
 - Alterado lista de seleção de projetos para não mostrar o projeto que está conectado;
 - Ajustado forma de recomendação da Extensão;
 - Renomeado comando de desabilitar todos os ambientes, para ficar mais claro sua função;
+- Ajustado mensagem que era apresentado como erro quando o Projeto não era selecionado.
 
 ### Added
 - Criado configuração na lista de projetos para armazenar o ambiente Default;
 - Adicionado no menu de contexto da View de Gerenciamento de servidores o comando para definir um ambiente como Default;
-- Implementado comando para  definir um ambiente como Default de um projeto;
 - [Implementado uso do Ambiente Default #20](https://github.com/AlencarGabriel/advpl-switch-project/issues/20);
     - Agora será considerado nas alternâncias de ambiente/projeto o ambiente default, não o primeiro da lista;
 - [Implementado comando para Associar um ambiente ao Projeto Ativo #21](https://github.com/AlencarGabriel/advpl-switch-project/issues/21);
