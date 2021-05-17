@@ -7,7 +7,7 @@ Esta é a extensão que vai facilitar seus Debugs de projetos AdvPL com arquivos
 >**Estou muito feliz pelo seu Download e espero que goste!**
 
 ## Necessidade
-Assim como acontece com o tão querido TDS, quando há arquivos com o mesmo nome no Workspace, o Debug se "perde".
+Assim como acontecia com o tão querido (e descontinuado) TDS Eclipse, quando há arquivos com o mesmo nome no Workspace, o Debug se "perde" ao mostrá-lo para depurar.
 
 Porém no VSCode não há a opção: ***Fechar Projeto***. Esta extensão irá te ajudar a resolver este impasse em alguns minutos, basta fazer algumas configurações e pronto ;)
 
@@ -42,6 +42,8 @@ Próximas implementações:
 ## Requisitos para utilização
 
 Esta extensão depende da [advpl-vscode](https://marketplace.visualstudio.com/items?itemName=KillerAll.advpl-vscode) desenvolvida por [Rodrigo Antonio Godinho da Silva](https://github.com/killerall).
+
+Obs.: Atualmente esta extensão ainda não é 100% compatível com a [tds-vscode](https://marketplace.visualstudio.com/items?itemName=totvs.tds-vscode).
 
 ## Configuração
 Por padrão o VSCode adiciona no Workspace Settings as pastas do Workspace. Esta extensão manipula esta configuração conforme o projeto que está sendo usado.
@@ -141,3 +143,7 @@ Calling out known issues can help limit users opening duplicate issues against y
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/) -->
 
 **Aproveite, me ajuda e com certeza irá te ajudar tambem!** :heart:
+
+---
+
+> Esta extensão **foi criada e é mantida pela comunidade**. Não tem nenhum vínculo direto ou indireto com a TOTVS®, qualquer uma de suas franquias ou qualquer um de seus representantes. **TDS** é um produto criado e mantido pela TOTVS®. Esta extensão tem como objetivo apenas prover recursos que facilitem o gerenciamento de projetos AdvPL no VsCode.
