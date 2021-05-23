@@ -1,11 +1,11 @@
-import * as vscode from 'vscode';
+import {Uri} from 'vscode';
 
 export class Project {
-    uri: vscode.Uri;
+    uris: Uri[];
     name: string;
 
-    constructor(uri: vscode.Uri, label: string) {
-        this.uri = uri;
+    constructor(uris: Uri[], label: string) {
+        this.uris = uris;
         this.name = label;
     }
 }

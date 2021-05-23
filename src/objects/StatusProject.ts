@@ -11,8 +11,10 @@ export class StatusProject {
     }
 
     public update(selectedProject?: string) {
-        if (selectedProject) {
+        if (selectedProject && selectedProject.trim() !== '') {
             this._selectedProject = selectedProject;
+        } else {
+            this._selectedProject = "Selecionar Projeto";
         }
 
         this._statusBarItem.text = "$(file-directory) " + this._selectedProject;

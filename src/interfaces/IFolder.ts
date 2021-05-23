@@ -5,4 +5,5 @@ export default interface IFolder {
     name: string;
     environments: string[];
     environment_default: string;
+    paths: string[];
 }

@@ -127,7 +127,6 @@
             "properties": {
                 "advpl.projectActive": {
                     "type": "string",
-                    "default": "Selecione o Projeto",
                     "description": "Projeto padrão do Workspace"
                 },
                 "advpl.onlyRelatedEnvironments": {
@@ -143,9 +142,19 @@
                         "type": "object",
                         "properties": {
                             "path": {
+                                "deprecationMessage": "Usar atributo de array 'paths' no lugar deste",
                                 "type": "string",
                                 "default": "",
                                 "description": "Caminho da pasta do projeto"
+                            },
+                            "paths": {
+                                "type": "array",
+                                "default": [],
+                                "description": "Pastas do projeto",
+                                "items": {
+                                    "type": "string",
+                                    "uniqueItems": true
+                                }
                             },
                             "name": {
                                 "type": "string",

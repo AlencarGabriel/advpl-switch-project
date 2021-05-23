@@ -7,6 +7,7 @@ import { StatusProject } from './objects/StatusProject';
 import { Project } from './objects/Project';
 import IEnvironment from './interfaces/IEnvironment';
 import IFolder from './interfaces/IFolder';
+import * as path from 'path';
 
 let status: StatusProject;
 
@@ -26,34 +27,16 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function Initialize(context: vscode.ExtensionContext) {
+    const projectActive = vscode.workspace.getConfiguration("advpl").get<string>("projectActive");
     status = new StatusProject();
+    status.update(projectActive);
 
-    // Ao iniciar a extensão atualiza as configurações para o ambiente que está realmente configurado
-    // Obs.: Em alguns casos a extensão é reiniciada, ou por algum erro o projeto não é trocado.
-    if (vscode.workspace.workspaceFolders) {
-        if (vscode.workspace.workspaceFolders.length > 0) {
-
-            // Busca o projeto ativo
-            let prjActive = vscode.workspace.workspaceFolders[0].name;
-
-            // Atualiza a configuração setando o projeto ativo
-            vscode.workspace.getConfiguration("advpl").update("projectActive", prjActive).then(e => {
-
-                // Atualiza o status bar
-                status.update(prjActive);
-
-                // Atualiza os ambientes que ficarão habilitados
-                if (vscode.workspace.workspaceFolders) {
-                    // Se há mais de um projeto habilitado, carrega todos os ambientes
-                    if (vscode.workspace.workspaceFolders.length > 1) {
-                        disableEnvironments("", true);
-                    } else {
-                        // se não apenas os do projeto aberto
-                        disableEnvironments(prjActive);
-                    }
-                }
-            });
-        }
+    // Atualiza os ambientes que ficarão habilitados
+    if (projectActive) {
+        // Se tiver projeto mostra apenas do projeto aberto
+        disableEnvironments(projectActive);
+    } else {
+        disableEnvironments("", true);
     }
 
     context.subscriptions.push(addRemoveLastWorkspace());
@@ -69,16 +52,15 @@ export function Initialize(context: vscode.ExtensionContext) {
 function addSwitchProject() {
     let disposable = vscode.commands.registerCommand('switch.switchProject', () => {
 
-        if (checkWorkspaceFolders()) {
-            window.showQuickPick(getPatches(false)).then((a => {
-                if (a) {
-                    let _uri = vscode.Uri.parse("file:" + a.value);
-                    changeProject(new Project(_uri, a.label));
-                } else {
-                    window.showWarningMessage("Projeto não selecionado.");
-                }
-            }));
-        }
+        window.showQuickPick(getPaths(false)).then((a => {
+            if (a) {
+                let _uris: Array<vscode.Uri> = [];
+                a.paths.forEach(path => _uris.push(vscode.Uri.parse("file:" + path)));
+                changeProject(new Project(_uris, a.label));
+            } else {
+                window.showWarningMessage("Projeto não selecionado.");
+            }
+        }));
 
     });
     return disposable;
@@ -169,13 +151,7 @@ function addEnableProjects() {
         // Checa se o usuário desativou a opção para mostrar somente os ambientes vinculados ao projeto
         if (onlyRelatedEnvironments()) {
 
-            openAllProjects().then(e => {
-
-                // window.showInformationMessage("Todos os Projetos foram Habilitados.");
-
-                // Atualiza a janela para recarregar a extensão
-                vscode.commands.executeCommand("workbench.action.reloadWindow");
-            });
+            openAllProjects();
 
         } else {
             window.showInformationMessage("Este comando só terá efeito se a configuração 'advpl.onlyRelatedEnvironments' estiver habilitada.");
@@ -374,20 +350,34 @@ export function deactivate() {
 }
 
 export function openAllProjects(): Thenable<void> {
-    let projects = Array<Project>();
+    const projects = Array<Project>();
+    const folders: Array<{uri: vscode.Uri; name?: string | undefined}> = [];
 
     return new Promise(function (resolve) {
-        getPatches().forEach(element => {
-            projects.push(new Project(vscode.Uri.parse("file:" + element.value), element.label));
+
+        getPaths().forEach(element => {
+            projects.push(new Project(element.paths.map(path => vscode.Uri.parse("file:" + path)), element.label))
         });
+
+        projects.forEach(project =>
+            project.uris.forEach(projectUri => {
+                if (project.uris.length === 1) {
+                    folders.push({ uri: projectUri, name: project.name });
+                } else {
+                    const dirs = projectUri.fsPath.split(path.sep);
+                    folders.push({ uri: projectUri, name: dirs[dirs.length - 2] + path.sep + dirs[dirs.length - 1] });
+                }
+            }
+            )
+        );
 
         // Atualiza os ambientes que ficarão habilitados
         disableEnvironments("", true).then(e => {
-            if (vscode.workspace.workspaceFolders) {
-                vscode.workspace.updateWorkspaceFolders(0, vscode.workspace.workspaceFolders.length, ...projects);
-            }
-
-            resolve();
+            vscode.workspace.getConfiguration("advpl").update("projectActive", undefined).then(() => {
+                status.update();
+                vscode.workspace.updateWorkspaceFolders(0, (vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0), ...folders);
+                resolve();
+            });
 
         });
 
@@ -395,21 +385,24 @@ export function openAllProjects(): Thenable<void> {
 }
 
 export function openWorkspace(prj: Project) {
-    let uri = prj.uri;
-    let name = prj.name;
+    const folders: Array<{uri: vscode.Uri; name?: string | undefined}> = [];
+
+    prj.uris.map(projectUri => folders.push({uri: projectUri}));
+
+    if (folders.length === 1) {
+        folders[0].name = prj.name;
+    } else {
+        folders.map(folder => {
+            const dirs = folder.uri.fsPath.split(path.sep);
+            folder.name = dirs[dirs.length - 2] + path.sep + dirs[dirs.length - 1];
+        })
+    }
 
     if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-        return vscode.workspace.updateWorkspaceFolders(0, 1, { uri, name });
+        return vscode.workspace.updateWorkspaceFolders(0, vscode.workspace.workspaceFolders.length, ...folders);
     } else {
-        return addWorkspace(prj);
+        return vscode.workspace.updateWorkspaceFolders(0, 0, ...folders);
     }
-}
-
-export function addWorkspace(prj: Project) {
-    let uri = prj.uri;
-    let name = prj.name;
-
-    return vscode.workspace.updateWorkspaceFolders(0, 0, { uri, name });
 }
 
 export function removeWorkspace(uri: vscode.Uri) {
@@ -423,15 +416,15 @@ export function removeWorkspace(uri: vscode.Uri) {
     return vscode.workspace.updateWorkspaceFolders(workspaceFolder.index, 1);
 }
 
-export function getPatches(fetchAll: boolean = true) {
-    let patches: Array<List> = [];
+export function getPaths(fetchAll: boolean = true) {
+    let paths: Array<List> = [];
     let config = vscode.workspace.getConfiguration("advpl");
     let folders = config.get<Array<IFolder>>("foldersProject");
-    let projectActive = config.get<string>("projectActive");
+    let projectActive = config.get<string>("projectActive") || "";
     let showProjectPath = config.get<boolean>("showProjectPath");
 
-    // Verifica se existe a configurção de projetos e de projeto ativo
-    if (folders && projectActive) {
+    // Verifica se existe a configurção de projetos
+    if (folders) {
         if (folders.length === 0) {
             window.showWarningMessage("Não há projetos definidos na configuração advpl.foldersProject", ...["Configurações"]).then((e) => {
                 if (e === "Configurações") {
@@ -443,14 +436,28 @@ export function getPatches(fetchAll: boolean = true) {
         for (let i = 0; i < folders.length; i++) {
             // Não retorna o projeto que já está conectado caso a chamada seja pelo QuickPick
             if ((projectActive.trim() !== folders[i].name.trim() && !fetchAll) || fetchAll) {
-                patches.push(
-                    new List(
-                        folders[i].name,
-                        folders[i].environment_default,
-                        folders[i].path,
-                        showProjectPath ? folders[i].path : ""
-                    )
-                );
+
+                if (folders[i].paths && folders[i].paths.length > 0) {
+                    paths.push(
+                        new List(
+                            folders[i].name,
+                            folders[i].environment_default,
+                            folders[i].paths[0],
+                            showProjectPath ? folders[i].paths[0] : "",
+                            folders[i].paths
+                        )
+                    );
+                } else {
+                    paths.push(
+                        new List(
+                            folders[i].name,
+                            folders[i].environment_default,
+                            folders[i].path,
+                            showProjectPath ? folders[i].path : "",
+                            [folders[i].path]
+                        )
+                    );
+                }
             }
         }
     } else {
@@ -461,65 +468,45 @@ export function getPatches(fetchAll: boolean = true) {
         });
     }
 
-    return patches;
+    return paths;
 }
 
-export function changeProject(prj: Project) {
+export async function changeProject(prj: Project) {
     let updObj = vscode.workspace.getConfiguration("advpl");
     let projectActive = updObj.get<string>("projectActive");
+    const oldProject = projectActive;
 
     // Não deixa trocar para o mesmo projeto já aberto. Por algum motivo isso dá erro no VSCode quando se tenta trocar depois.
     if (prj.name === projectActive) {
         window.showInformationMessage("Este projeto já está aberto");
         return;
     } else {
+        // Atualiza os ambientes que ficarão habilitados
+        await disableEnvironments(prj.name);
+
         // Atualiza a configuração setando o projeto ativo
-        updObj.update("projectActive", prj.name).then(e => {
+        await updObj.update("projectActive", prj.name).then(e => {
+            // Atualiza o projeto na status bar
+            status.update(prj.name);
+        });
 
-            // Atualiza os ambientes que ficarão habilitados
-            disableEnvironments(prj.name).then(e => {
+        if (!openWorkspace(prj)) {
 
-                // Não precisa atualizar a Status Bar agora pois neste caso a extensão será reiniciada
-
-                if (!openWorkspace(prj)) {
-                    window.showErrorMessage("Não foi possível alterar para o projeto: " + prj.name, ...["Reload"]).then(() => {
-                        // Atualiza a janela para recarregar a extensão
-                        vscode.commands.executeCommand("workbench.action.reloadWindow");
-                    });
-                }
+            // Atualiza a configuração retornando o projeto anterior
+            await updObj.update("projectActive", oldProject).then(e => {
+                // Atualiza o projeto na status bar
+                status.update(oldProject);
             });
 
-        });
-    }
-}
-
-export function getPathByLabel(label: string) {
-    let patches = getPatches();
-
-    return patches[patches.findIndex(e => e.label === label)].value;
-}
-
-export function checkWorkspaceFolders(): Boolean {
-    let actions: string[] = ["Executar"];
-
-    if (vscode.workspace.workspaceFolders) {
-        if (vscode.workspace.workspaceFolders.length > 1) {
-            window.showInformationMessage("Necessário rodar o comando: 'Remover últimos projetos' para limpar as outras pastas abertas no workspace.", ...actions).then((e => {
-                if (e === "Executar") {
-                    vscode.commands.executeCommand("switch.removeLastWorkspace").then(() => {
-                        window.showInformationMessage("Comando executado.");
-                    });
-                }
-            }));
-
-            return false;
+            window.showErrorMessage(`Não foi possível alterar para o projeto: ${prj.name}`, ...["Reload"]).then(() => {
+                // Atualiza a janela para recarregar a extensão
+                vscode.commands.executeCommand("workbench.action.reloadWindow");
+            });
         }
     }
-
-    return true;
 }
 
-function disableEnvironments(projectName: string, forceEnabled: boolean = false, envParamDefault?: string | undefined): Thenable<void> {
+async function disableEnvironments(projectName: string, forceEnabled: boolean = false, envParamDefault?: string | undefined): Promise<void> {
     // Busca as configurações
     const config = vscode.workspace.getConfiguration("advpl");
 
@@ -595,49 +582,33 @@ function disableEnvironments(projectName: string, forceEnabled: boolean = false,
         }
     }
 
-    return new Promise(function (resolve) {
-        config.update("environments", environments).then(e => {
-            changeEnvironment(config, environments, envDefault).then(e => {
-                resolve();
-            });
-        });
-    });
+    await config.update("environments", environments);
+    await changeEnvironment(config, environments, envDefault);
 }
 
-export function changeEnvironment(config: vscode.WorkspaceConfiguration,
+export async function changeEnvironment(config: vscode.WorkspaceConfiguration,
     environments: Array<IEnvironment> | undefined,
-    envDefault: string | undefined): Thenable<void> {
+    envDefault: string | undefined): Promise<void> {
 
-    return new Promise(function (resolve) {
+    // Após atualizar os ambientes, mantem ativo o ambiente Default ou o primeiro que não está desabilitado
+    if (environments) {
 
-        // Após atualizar os ambientes, mantem ativo o ambiente Default ou o primeiro que não está desabilitado
-        if (environments) {
+        let envEnabled = environments.filter(env => env.enable !== false);
 
-            let envEnabled = environments.filter(env => env.enable !== false);
+        // Verifica se o Ambiente Default está definido e pertence a lista de ambientes do projeto
+        if (envEnabled.find(env => (env.name ? env.name : env.environment) === envDefault)) {
+            await config.update("selectedEnvironment", envDefault);
+        } else {
 
-            // Verifica se o Ambiente Default está definido e pertence a lista de ambientes do projeto
-            if (envEnabled.find(env => (env.name ? env.name : env.environment) === envDefault)) {
-                config.update("selectedEnvironment", envDefault).then(e => {
-                    resolve();
-                });
+            if (envEnabled.length > 0) {
+                await config.update("selectedEnvironment", envEnabled[0].name ? envEnabled[0].name : envEnabled[0].environment);
             } else {
-
-                if (envEnabled.length > 0) {
-                    config.update("selectedEnvironment", envEnabled[0].name ? envEnabled[0].name : envEnabled[0].environment).then(e => {
-                        resolve();
-                    });
-                } else {
-                    config.update("selectedEnvironment", "Selecione o Ambiente").then(e => {
-                        resolve();
-                    });
-                }
-
+                await config.update("selectedEnvironment", "Selecione o Ambiente");
             }
 
-        } else {
-            resolve();
         }
-    });
+
+    }
 
 }
 
