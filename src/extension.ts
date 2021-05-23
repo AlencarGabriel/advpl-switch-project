@@ -47,6 +47,9 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addSetDefault());
     context.subscriptions.push(addAddProject());
     context.subscriptions.push(addDelProject());
+
+    // TODO: TRatar para ao inserir ou remover, verificar se possui na lista do projeto e retirar ou remover
+    vscode.workspace.onDidChangeWorkspaceFolders(e => {console.log(e.added); console.log(e.removed)})
 }
 
 function addSwitchProject() {
