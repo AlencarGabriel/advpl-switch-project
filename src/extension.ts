@@ -394,14 +394,6 @@ export function openAllProjects(): Thenable<void> {
     });
 }
 
-vscode.workspace.onDidChangeWorkspaceFolders(e => {
-    console.log("Changed Folders");
-});
-
-vscode.workspace.onDidChangeConfiguration(e => {
-    console.log("Changed Configuration");
-});
-
 export function openWorkspace(prj: Project) {
     let uri = prj.uri;
     let name = prj.name;
