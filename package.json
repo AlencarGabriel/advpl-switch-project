@@ -86,7 +86,7 @@
             },
             {
                 "command": "switch.disableEnvironments",
-                "title": "Advpl - Desabilitar Ambientes fora do Projeto",
+                "title": "Advpl - Mostrar apenas ambientes do Projeto atual",
                 "icon": {
                     "light": "images/fold.svg",
                     "dark": "images/fold_dark.svg"
@@ -94,7 +94,7 @@
             },
             {
                 "command": "switch.enableEnvironments",
-                "title": "Advpl - Habilitar todos os Ambientes",
+                "title": "Advpl - Mostrar todos os ambientes",
                 "icon": {
                     "light": "images/unfold.svg",
                     "dark": "images/unfold_dark.svg"
@@ -102,11 +102,11 @@
             },
             {
                 "command": "switch.removeLastWorkspace",
-                "title": "Advpl - Desabilitar todos os Projetos"
+                "title": "Advpl - Ocultar todos os Projetos"
             },
             {
                 "command": "switch.enableProjects",
-                "title": "Advpl - Habilitar todos os Projetos"
+                "title": "Advpl - Mostrar todos os Projetos"
             },
             {
                 "command": "switch.setDefault",
