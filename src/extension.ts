@@ -48,8 +48,9 @@ export function Initialize(context: vscode.ExtensionContext) {
     context.subscriptions.push(addAddProject());
     context.subscriptions.push(addDelProject());
 
-    // TODO: TRatar para ao inserir ou remover, verificar se possui na lista do projeto e retirar ou remover
-    vscode.workspace.onDidChangeWorkspaceFolders(e => {console.log(e.added); console.log(e.removed)})
+    vscode.workspace.onDidChangeWorkspaceFolders(folders => {
+        trataFoldersWorkspace(folders.added, folders.removed);
+    })
 }
 
 function addSwitchProject() {
@@ -419,7 +420,7 @@ export function removeWorkspace(uri: vscode.Uri) {
     return vscode.workspace.updateWorkspaceFolders(workspaceFolder.index, 1);
 }
 
-export function getPaths(fetchAll: boolean = true) {
+export function getPaths(fetchAll: boolean = true) : Array<List> {
     let paths: Array<List> = [];
     let config = vscode.workspace.getConfiguration("advpl");
     let folders = config.get<Array<IFolder>>("foldersProject");
@@ -446,7 +447,7 @@ export function getPaths(fetchAll: boolean = true) {
                             folders[i].name,
                             folders[i].environment_default,
                             folders[i].paths[0],
-                            showProjectPath ? folders[i].paths[0] : "",
+                            showProjectPath ? folders[i].paths[0] + (folders[i].paths.length > 1 ? ` | +${folders[i].paths.length-1}` : '') : '',
                             folders[i].paths
                         )
                     );
@@ -456,7 +457,7 @@ export function getPaths(fetchAll: boolean = true) {
                             folders[i].name,
                             folders[i].environment_default,
                             folders[i].path,
-                            showProjectPath ? folders[i].path : "",
+                            showProjectPath ? folders[i].path : '',
                             [folders[i].path]
                         )
                     );
@@ -640,4 +641,55 @@ export function onlyRelatedEnvironments() {
     } else {
         return true;
     }
+}
+
+function trataFoldersWorkspace(added: ReadonlyArray<vscode.WorkspaceFolder>, removed: ReadonlyArray<vscode.WorkspaceFolder>){
+    const config = vscode.workspace.getConfiguration('advpl');
+    const folders = config.get<Array<IFolder>>('foldersProject');
+    const projectActive = config.get<string>('projectActive', '');
+
+    if (folders) {
+        folders.map(folder => {
+            // Insere ou remove na lista de pastas do projeto o que foi manipulado na workspace
+            if (folder.name.trim() === projectActive.trim()) {
+                // Adiciona as pastas novas no projeto
+                added.forEach(workspaceFolder => {
+                    console.log("foi added");
+
+                    if (!folder.paths) {
+                        folder.paths = new Array<string>();
+                        folder.paths.push(folder.path);
+                    }
+
+                    const position = folder.paths.findIndex(path => path === workspaceFolder.uri.fsPath);
+
+                    if (position < 0) {
+                        folder.paths.push(workspaceFolder.uri.fsPath);
+                    }
+                });
+
+                // Remove as pastas do projeto
+                removed.forEach(workspaceFolder => {
+                    console.log("foi removed");
+
+                    if (!folder.paths) {
+                        folder.paths = new Array<string>();
+                    }
+
+                    const position = folder.paths.findIndex(path => path === workspaceFolder.uri.fsPath);
+
+                    if (position >= 0) {
+                        folder.paths.splice(position, 1);
+                    }
+                });
+            }
+        });
+    }
+
+    vscode.window.showInformationMessage(`Deseja aplicar os ajustes da workspace no projeto?`, ...['Sim', 'Não']).then(e => {
+        if (e === 'Sim') {
+            config.update('foldersProject', folders);
+        }
+    });
+
 }
