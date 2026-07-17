@@ -2,7 +2,7 @@
     "name": "advpl-switch-project",
     "displayName": "AdvPL Project Manager",
     "description": "Suporte a gerenciamento de Projetos AdvPL para VSCode.",
-    "version": "0.7.5",
+    "version": "0.7.6",
     "publisher": "AlencarGabriel",
     "icon": "images/Icon2.png",
     "homepage": "https://github.com/AlencarGabriel/advpl-switch-project",
@@ -11,8 +11,7 @@
         "url": "https://github.com/AlencarGabriel/advpl-switch-project.git"
     },
     "bugs": {
-        "url": "https://github.com/AlencarGabriel/advpl-switch-project/issues",
-        "email": "alencargabriel@outlook.com.br"
+        "url": "https://github.com/AlencarGabriel/advpl-switch-project/issues"
     },
     "engines": {
         "vscode": "^1.50.0"
